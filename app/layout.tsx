@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { HashAuthHandler } from "@/components/hash-auth-handler";
 import "./globals.css";
 
 const display = Fraunces({
@@ -38,6 +39,7 @@ export default function RootLayout({
         className="min-h-full flex flex-col font-[family-name:var(--font-body)]"
         style={{ fontFamily: "var(--font-body), Georgia, serif" }}
       >
+        <HashAuthHandler />
         {children}
       </body>
     </html>

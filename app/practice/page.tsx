@@ -10,7 +10,7 @@ export default async function PracticePage() {
   const { supabase, profile, user } = await requireProfile();
 
   if (!profile.onboarding_completed) {
-    redirect("/onboarding");
+    redirect("/setup");
   }
 
   const languages: Language[] =

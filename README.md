@@ -16,10 +16,20 @@ Train code reading skills with short, weird snippets from real projects. Look at
 cp .env.local.example .env.local
 ```
 
-2. In Supabase Auth settings:
-   - Enable **GitHub** and **Email** (magic link)
-   - Site URL: `http://localhost:3000`
-   - Redirect URLs: `http://localhost:3000/auth/callback`
+Never commit `.env.local`. Secrets stay in Vercel project env vars for production.
+
+2. In Supabase Auth → URL configuration, allow both local and production:
+
+| Setting | Value |
+|---------|--------|
+| Site URL | `https://codesnoop.vercel.app` |
+| Redirect URLs | `http://localhost:3000/auth/callback` |
+| | `https://codesnoop.vercel.app/auth/callback` |
+| | `https://codesnoop.vercel.app/**` |
+
+Enable **GitHub** and **Email** providers. For GitHub OAuth App, the Authorization callback URL is always:
+
+`https://gpmcdhumlvaxjmqifmzr.supabase.co/auth/v1/callback`
 
 3. Install and run:
 
@@ -28,13 +38,27 @@ npm install
 npm run dev
 ```
 
+## Production (Vercel)
+
+- App: https://codesnoop.vercel.app
+- Project: `anh-ng/codesnoop`
+- Env vars (set in Vercel, not git): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+```bash
+npx vercel env add NEXT_PUBLIC_SUPABASE_URL
+npx vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY
+npx vercel --prod
+```
+
+The anon/publishable key is safe to expose to the browser (`NEXT_PUBLIC_`) because Row Level Security enforces access. Never put the **service role** key in `NEXT_PUBLIC_` or the client.
+
 ## MVP routes
 
 | Route | Purpose |
 |-------|---------|
 | `/` | Landing |
-| `/login` | GitHub + magic link |
-| `/onboarding` | Preferred languages |
+| `/login` | GitHub, email/password, or magic link |
+| `/setup` | Account setup (name, password, languages) after first magic link |
 | `/dashboard` | Points, streak, progress |
 | `/practice` | Main practice loop |
 

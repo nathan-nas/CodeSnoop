@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { LoginForm } from "@/components/login-form";
@@ -18,10 +19,12 @@ export default function LoginPage() {
           Sign in
         </h1>
         <p className="mt-2 text-[var(--ink-muted)]">
-          GitHub or a magic link to your email.
+          GitHub, email + password, or a magic link for first-time setup.
         </p>
         <div className="mt-8 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-6 backdrop-blur">
-          <LoginForm />
+          <Suspense fallback={<p className="text-sm text-[var(--ink-muted)]">Loading…</p>}>
+            <LoginForm />
+          </Suspense>
         </div>
       </main>
     </div>

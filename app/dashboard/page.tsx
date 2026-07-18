@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   const { profile, user } = await requireProfile();
 
   if (!profile.onboarding_completed) {
-    redirect("/onboarding");
+    redirect("/setup");
   }
 
   const supabase = await createClient();

@@ -1,14 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+type Mode = "password" | "magic";
+
 export function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "loading" | "sent" | "error">(
-    "idle",
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialMode = (searchParams.get("mode") as Mode | null) ?? "password";
+
+  const [mode, setMode] = useState<Mode>(
+    initialMode === "magic" ? "magic" : "password",
   );
-  const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpSent, setOtpSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "error">("idle");
+  const urlError = useMemo(() => {
+    const raw = searchParams.get("error");
+    if (!raw) return null;
+    if (raw === "auth") {
+      return "Sign-in failed. Request a new email code and try again.";
+    }
+    return raw;
+  }, [searchParams]);
+  const [error, setError] = useState<string | null>(urlError);
+
+  async function afterSignedIn() {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      setError("Could not load your session.");
+      setStatus("error");
+      return;
+    }
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed")
+      .eq("id", user.id)
+      .single();
+
+    router.push(profile?.onboarding_completed ? "/dashboard" : "/setup");
+    router.refresh();
+  }
 
   async function signInWithGitHub() {
     setStatus("loading");
@@ -26,7 +66,24 @@ export function LoginForm() {
     }
   }
 
-  async function signInWithMagicLink(e: React.FormEvent) {
+  async function signInWithPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setError(null);
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (authError) {
+      setError(authError.message);
+      setStatus("error");
+      return;
+    }
+    await afterSignedIn();
+  }
+
+  async function sendEmailCode(e: React.FormEvent) {
     e.preventDefault();
     setStatus("loading");
     setError(null);
@@ -34,6 +91,9 @@ export function LoginForm() {
     const { error: authError } = await supabase.auth.signInWithOtp({
       email,
       options: {
+        shouldCreateUser: true,
+        // Keep redirect for the email link, but we primarily use the 6-digit code
+        // because mail scanners often consume one-time verify links.
         emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
@@ -42,7 +102,26 @@ export function LoginForm() {
       setStatus("error");
       return;
     }
-    setStatus("sent");
+    setOtpSent(true);
+    setStatus("idle");
+  }
+
+  async function verifyEmailCode(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setError(null);
+    const supabase = createClient();
+    const { error: authError } = await supabase.auth.verifyOtp({
+      email,
+      token: otp.trim(),
+      type: "email",
+    });
+    if (authError) {
+      setError(authError.message);
+      setStatus("error");
+      return;
+    }
+    await afterSignedIn();
   }
 
   return (
@@ -62,32 +141,130 @@ export function LoginForm() {
         <span className="h-px flex-1 bg-[var(--line)]" />
       </div>
 
-      <form onSubmit={signInWithMagicLink} className="space-y-3">
-        <label className="block text-sm text-[var(--ink-muted)]">
-          Email
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-[var(--line)] bg-white/80 px-3 py-2 text-[var(--ink)] outline-none ring-[var(--accent)] focus:ring-2"
-            placeholder="you@example.com"
-          />
-        </label>
+      <div className="flex rounded-md border border-[var(--line)] p-1 text-sm">
         <button
-          type="submit"
-          disabled={status === "loading"}
-          className="w-full rounded-md bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-60"
+          type="button"
+          onClick={() => setMode("password")}
+          className={`flex-1 rounded px-3 py-1.5 font-medium ${
+            mode === "password"
+              ? "bg-[var(--ink)] text-white"
+              : "text-[var(--ink-muted)]"
+          }`}
         >
-          Send magic link
+          Password
         </button>
-      </form>
+        <button
+          type="button"
+          onClick={() => setMode("magic")}
+          className={`flex-1 rounded px-3 py-1.5 font-medium ${
+            mode === "magic"
+              ? "bg-[var(--ink)] text-white"
+              : "text-[var(--ink-muted)]"
+          }`}
+        >
+          Email code
+        </button>
+      </div>
 
-      {status === "sent" && (
-        <p className="text-sm text-[var(--ok)]">
-          Check your email for the sign-in link.
-        </p>
+      {mode === "password" ? (
+        <form onSubmit={signInWithPassword} className="space-y-3">
+          <label className="block text-sm text-[var(--ink-muted)]">
+            Email
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white/80 px-3 py-2 text-[var(--ink)] outline-none ring-[var(--accent)] focus:ring-2"
+              placeholder="you@example.com"
+              autoComplete="email"
+            />
+          </label>
+          <label className="block text-sm text-[var(--ink-muted)]">
+            Password
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white/80 px-3 py-2 text-[var(--ink)] outline-none ring-[var(--accent)] focus:ring-2"
+              autoComplete="current-password"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full rounded-md bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-60"
+          >
+            Sign in
+          </button>
+        </form>
+      ) : !otpSent ? (
+        <form onSubmit={sendEmailCode} className="space-y-3">
+          <label className="block text-sm text-[var(--ink-muted)]">
+            Email
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white/80 px-3 py-2 text-[var(--ink)] outline-none ring-[var(--accent)] focus:ring-2"
+              placeholder="you@example.com"
+              autoComplete="email"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full rounded-md bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-60"
+          >
+            Send login code
+          </button>
+          <p className="text-xs text-[var(--ink-muted)]">
+            We’ll email a 6-digit code. Prefer the code over the link — mail
+            apps often invalidate one-click links before you open them.
+          </p>
+        </form>
+      ) : (
+        <form onSubmit={verifyEmailCode} className="space-y-3">
+          <p className="text-sm text-[var(--ok)]">
+            Code sent to <span className="font-medium">{email}</span>
+          </p>
+          <label className="block text-sm text-[var(--ink-muted)]">
+            6-digit code
+            <input
+              type="text"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              required
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="mt-1 w-full rounded-md border border-[var(--line)] bg-white/80 px-3 py-2 font-mono text-lg tracking-widest text-[var(--ink)] outline-none ring-[var(--accent)] focus:ring-2"
+              placeholder="123456"
+              autoComplete="one-time-code"
+            />
+          </label>
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="w-full rounded-md bg-[var(--accent)] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)] disabled:opacity-60"
+          >
+            Verify and continue
+          </button>
+          <button
+            type="button"
+            className="w-full text-sm text-[var(--ink-muted)] hover:text-[var(--ink)]"
+            onClick={() => {
+              setOtpSent(false);
+              setOtp("");
+              setError(null);
+            }}
+          >
+            Use a different email
+          </button>
+        </form>
       )}
+
       {error && <p className="text-sm text-[var(--danger)]">{error}</p>}
     </div>
   );

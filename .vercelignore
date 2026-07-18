@@ -1,0 +1,6 @@
+.env
+.env.*
+!.env.local.example
+.idea
+node_modules
+.next

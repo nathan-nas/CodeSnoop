@@ -45,6 +45,7 @@ export async function updateSession(request: NextRequest) {
 
   if (user && (path === "/login" || path === "/")) {
     const url = request.nextUrl.clone();
+    // Setup page / dashboard will route based on onboarding_completed.
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
