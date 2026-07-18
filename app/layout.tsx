@@ -23,6 +23,18 @@ export const metadata: Metadata = {
   title: "CodeSnoop",
   description:
     "Train code reading skills with short, weird snippets from real projects.",
+  applicationName: "CodeSnoop",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    title: "CodeSnoop",
+    capable: true,
+  },
 };
 
 export default function RootLayout({

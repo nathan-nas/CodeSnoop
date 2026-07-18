@@ -43,9 +43,18 @@ export default async function DashboardPage() {
       <SiteHeader
         right={
           <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-[var(--ink-muted)] sm:inline">
+            <Link
+              href="/profile"
+              className="hidden text-sm text-[var(--ink-muted)] hover:text-[var(--ink)] sm:inline"
+            >
               {profile.display_name ?? user.email}
-            </span>
+            </Link>
+            <Link
+              href="/profile"
+              className="text-sm font-medium text-[var(--ink)] hover:text-[var(--accent)]"
+            >
+              Profile
+            </Link>
             <SignOutButton />
           </div>
         }
@@ -85,11 +94,10 @@ export default async function DashboardPage() {
             Continue Practice
           </Link>
           <Link
-            href="/practice?mode=challenge"
-            className="rounded-md border border-[var(--line)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold text-[var(--ink-muted)]"
-            title="Coming soon"
+            href="/profile#friends"
+            className="rounded-md border border-[var(--line)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold text-[var(--ink)]"
           >
-            Start Challenge
+            Compete with friends
           </Link>
         </div>
 

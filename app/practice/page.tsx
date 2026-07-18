@@ -18,6 +18,8 @@ export default async function PracticePage() {
       ? profile.preferred_languages
       : ["javascript", "java"];
 
+  const preferredTopics = profile.preferred_topics?.filter(Boolean) ?? [];
+
   const { data: attempts } = await supabase
     .from("question_attempts")
     .select("question_id")
@@ -25,7 +27,7 @@ export default async function PracticePage() {
 
   const answeredIds = new Set((attempts ?? []).map((a) => a.question_id));
 
-  const { data: questions } = await supabase
+  let query = supabase
     .from("questions")
     .select("*")
     .eq("status", "published")
@@ -33,9 +35,28 @@ export default async function PracticePage() {
     .order("created_at", { ascending: true })
     .limit(50);
 
-  const pool = (questions as Question[] | null) ?? [];
-  const next =
-    pool.find((q) => !answeredIds.has(q.id)) ?? pool[0] ?? null;
+  if (preferredTopics.length > 0) {
+    query = query.overlaps("topic_tags", preferredTopics);
+  }
+
+  let { data: questions } = await query;
+  let pool = (questions as Question[] | null) ?? [];
+  let next =
+    pool.find((q) => !answeredIds.has(q.id)) ?? null;
+
+  if (!next && preferredTopics.length > 0) {
+    const fallback = await supabase
+      .from("questions")
+      .select("*")
+      .eq("status", "published")
+      .in("language", languages)
+      .order("created_at", { ascending: true })
+      .limit(50);
+    pool = (fallback.data as Question[] | null) ?? [];
+    next = pool.find((q) => !answeredIds.has(q.id)) ?? pool[0] ?? null;
+  } else if (!next) {
+    next = pool[0] ?? null;
+  }
 
   let publicQuestion: PublicQuestion | null = null;
   let html = "";
@@ -59,12 +80,20 @@ export default async function PracticePage() {
       <div className="pointer-events-none absolute inset-0 grid-noise opacity-30" />
       <SiteHeader
         right={
-          <Link
-            href="/dashboard"
-            className="text-sm text-[var(--ink-muted)] hover:text-[var(--ink)]"
-          >
-            Dashboard
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="text-sm text-[var(--ink-muted)] hover:text-[var(--ink)]"
+            >
+              Dashboard
+            </Link>
+            <Link
+              href="/profile"
+              className="text-sm font-medium text-[var(--ink)] hover:text-[var(--accent)]"
+            >
+              Profile
+            </Link>
+          </div>
         }
       />
       <main className="relative z-10 mx-auto max-w-3xl px-6 pb-20 md:px-10">

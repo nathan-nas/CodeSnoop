@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { safeNextPath } from "@/lib/safe-next";
 
 type Mode = "password" | "magic";
 
@@ -10,6 +11,7 @@ export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialMode = (searchParams.get("mode") as Mode | null) ?? "password";
+  const nextPath = safeNextPath(searchParams.get("next"));
 
   const [mode, setMode] = useState<Mode>(
     initialMode === "magic" ? "magic" : "password",
@@ -46,8 +48,18 @@ export function LoginForm() {
       .eq("id", user.id)
       .single();
 
-    router.push(profile?.onboarding_completed ? "/dashboard" : "/setup");
+    if (!profile?.onboarding_completed) {
+      router.push("/setup");
+    } else {
+      router.push(nextPath ?? "/dashboard");
+    }
     router.refresh();
+  }
+
+  function callbackUrl() {
+    const base = `${window.location.origin}/auth/callback`;
+    if (!nextPath) return base;
+    return `${base}?next=${encodeURIComponent(nextPath)}`;
   }
 
   async function signInWithGitHub() {
@@ -57,7 +69,7 @@ export function LoginForm() {
     const { error: authError } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: callbackUrl(),
       },
     });
     if (authError) {
@@ -94,7 +106,7 @@ export function LoginForm() {
         shouldCreateUser: true,
         // Keep redirect for the email link, but we primarily use the 6-digit code
         // because mail scanners often consume one-time verify links.
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: callbackUrl(),
       },
     });
     if (authError) {

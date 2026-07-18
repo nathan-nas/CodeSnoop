@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { safeNextPath } from "@/lib/safe-next";
 
 function CallbackInner() {
   const router = useRouter();
@@ -98,7 +99,11 @@ function CallbackInner() {
         .single();
 
       setMessage("Signed in. Redirecting…");
-      router.replace(profile?.onboarding_completed ? "/dashboard" : "/setup");
+      if (!profile?.onboarding_completed) {
+        router.replace("/setup");
+      } else {
+        router.replace(safeNextPath(searchParams.get("next")) ?? "/dashboard");
+      }
     };
 
     void run();

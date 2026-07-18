@@ -2,6 +2,24 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import type { Language, PublicQuestion, Question } from "@/lib/types/database";
 
+function toPublic(q: Question): PublicQuestion {
+  const {
+    correct_option_index: _c,
+    explanation: _e,
+    thought_process: _t,
+    ...publicQuestion
+  } = q;
+  return publicQuestion;
+}
+
+function pickNext(pool: Question[], answeredIds: Set<string>): Question | null {
+  return (
+    pool.find((q) => !answeredIds.has(q.id)) ??
+    pool[Math.floor(Math.random() * pool.length)] ??
+    null
+  );
+}
+
 export async function GET(request: Request) {
   const supabase = await createClient();
   const {
@@ -18,7 +36,7 @@ export async function GET(request: Request) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("preferred_languages")
+    .select("preferred_languages, preferred_topics")
     .eq("id", user.id)
     .single();
 
@@ -29,6 +47,9 @@ export async function GET(request: Request) {
           ? (profile!.preferred_languages as Language[])
           : ["javascript", "java"]);
 
+  const preferredTopics =
+    (profile?.preferred_topics as string[] | null)?.filter(Boolean) ?? [];
+
   const { data: attempts } = await supabase
     .from("question_attempts")
     .select("question_id")
@@ -36,45 +57,57 @@ export async function GET(request: Request) {
 
   const answeredIds = new Set((attempts ?? []).map((a) => a.question_id));
 
-  let query = supabase
-    .from("questions")
-    .select("*")
-    .eq("status", "published")
-    .in("language", languages)
-    .order("created_at", { ascending: true })
-    .limit(50);
+  async function fetchPool(opts: {
+    topic?: string | null;
+    overlaps?: string[];
+  }) {
+    let query = supabase
+      .from("questions")
+      .select("*")
+      .eq("status", "published")
+      .in("language", languages)
+      .order("created_at", { ascending: true })
+      .limit(50);
 
-  if (topic) {
-    query = query.contains("topic_tags", [topic]);
+    if (opts.topic) {
+      query = query.contains("topic_tags", [opts.topic]);
+    } else if (opts.overlaps && opts.overlaps.length > 0) {
+      query = query.overlaps("topic_tags", opts.overlaps);
+    }
+
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+    return (data as Question[] | null) ?? [];
   }
 
-  const { data: questions, error } = await query;
+  try {
+    let pool: Question[];
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    if (topic) {
+      pool = await fetchPool({ topic });
+    } else if (preferredTopics.length > 0) {
+      pool = await fetchPool({ overlaps: preferredTopics });
+      const nextPreferred = pickNext(pool, answeredIds);
+      if (nextPreferred && !answeredIds.has(nextPreferred.id)) {
+        return NextResponse.json({ question: toPublic(nextPreferred) });
+      }
+      // Fall back so practice never goes empty when prefs are exhausted.
+      pool = await fetchPool({});
+    } else {
+      pool = await fetchPool({});
+    }
+
+    const next = pickNext(pool, answeredIds);
+    if (!next) {
+      return NextResponse.json(
+        { error: "No questions available", question: null },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json({ question: toPublic(next) });
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Query failed";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
-
-  const pool = (questions as Question[] | null) ?? [];
-  let next =
-    pool.find((q) => !answeredIds.has(q.id)) ??
-    pool[Math.floor(Math.random() * pool.length)] ??
-    null;
-
-  if (!next) {
-    return NextResponse.json(
-      { error: "No questions available", question: null },
-      { status: 404 },
-    );
-  }
-
-  const {
-    correct_option_index: _c,
-    explanation: _e,
-    thought_process: _t,
-    ...publicQuestion
-  } = next;
-
-  return NextResponse.json({
-    question: publicQuestion as PublicQuestion,
-  });
 }

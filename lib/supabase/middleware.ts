@@ -34,19 +34,34 @@ export async function updateSession(request: NextRequest) {
     path === "/" ||
     path.startsWith("/login") ||
     path.startsWith("/auth") ||
+    path.startsWith("/invite") ||
     path.startsWith("/_next") ||
     path.startsWith("/api");
 
   if (!user && !isPublic) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    const next = `${path}${request.nextUrl.search}`;
+    if (next.startsWith("/") && !next.startsWith("//")) {
+      url.searchParams.set("next", next);
+    }
     return NextResponse.redirect(url);
   }
 
   if (user && (path === "/login" || path === "/")) {
     const url = request.nextUrl.clone();
+    const next = request.nextUrl.searchParams.get("next");
+    if (
+      path === "/login" &&
+      next &&
+      next.startsWith("/") &&
+      !next.startsWith("//")
+    ) {
+      return NextResponse.redirect(new URL(next, request.url));
+    }
     // Setup page / dashboard will route based on onboarding_completed.
     url.pathname = "/dashboard";
+    url.search = "";
     return NextResponse.redirect(url);
   }
 

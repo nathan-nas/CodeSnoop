@@ -9,11 +9,27 @@ export type Profile = {
   updated_at: string;
   display_name: string | null;
   preferred_languages: Language[];
+  preferred_topics: string[];
+  friend_code: string;
   total_points: number;
   daily_streak: number;
   last_active_at: string | null;
   role: UserRole;
   onboarding_completed: boolean;
+};
+
+export type Friendship = {
+  user_id: string;
+  friend_id: string;
+  created_at: string;
+};
+
+export type FriendLeaderboardRow = {
+  id: string;
+  display_name: string | null;
+  total_points: number;
+  daily_streak: number;
+  is_self: boolean;
 };
 
 export type QuestionOption = {
