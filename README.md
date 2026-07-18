@@ -40,4 +40,18 @@ npm run dev
 
 ## Database
 
-Migrations live in `supabase/migrations/`. Apply via Supabase MCP or the SQL editor.
+Migrations live in `supabase/migrations/`:
+
+1. `20260718000001_initial_schema.sql` — tables, RLS, profile trigger
+2. `20260718000002_seed_questions.sql` — 8 published practice questions
+
+Apply with Supabase MCP `apply_migration`, the SQL editor, or `supabase db push` once the project is online. If the project was paused, restore it in the Supabase dashboard first.
+
+### Auth providers
+
+In **Authentication → Providers**:
+
+- Enable **GitHub** (set Client ID / Secret from a GitHub OAuth App)
+- Enable **Email** magic links
+
+Redirect URL: `http://localhost:3000/auth/callback`

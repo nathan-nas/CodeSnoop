@@ -1,65 +1,77 @@
-import Image from "next/image";
+import Link from "next/link";
+import { SiteHeader } from "@/components/site-header";
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
+      <div className="pointer-events-none absolute inset-0 grid-noise opacity-70" />
+      <SiteHeader
+        right={
+          <Link
+            href="/login"
+            className="rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)]"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Sign in to start
+          </Link>
+        }
+      />
+
+      <main className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col justify-center px-6 pb-20 pt-8 md:px-10">
+        <p className="mb-4 font-[family-name:var(--font-display)] text-5xl leading-[0.95] tracking-tight text-[var(--ink)] md:text-7xl lg:text-8xl">
+          CodeSnoop
+        </p>
+        <h1 className="max-w-xl text-xl text-[var(--ink-muted)] md:text-2xl">
+          Read short, weird snippets from real projects — then prove you
+          understood them.
+        </h1>
+        <p className="mt-5 max-w-lg text-base leading-relaxed text-[var(--ink-muted)]">
+          Multiple choice. Clear explanations. Points and streaks for showing
+          up. Java and JavaScript to start.
+        </p>
+        <div className="mt-10 flex flex-wrap gap-3">
+          <Link
+            href="/login"
+            className="rounded-md bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--accent-strong)]"
           >
-            Documentation
+            Sign in to start
+          </Link>
+          <a
+            href="#how"
+            className="rounded-md border border-[var(--line)] bg-[var(--surface)] px-5 py-3 text-sm font-semibold text-[var(--ink)] backdrop-blur"
+          >
+            How it works
           </a>
         </div>
       </main>
+
+      <section
+        id="how"
+        className="relative z-10 border-t border-[var(--line)] bg-[var(--surface)] px-6 py-14 backdrop-blur md:px-10"
+      >
+        <div className="mx-auto grid max-w-5xl gap-10 md:grid-cols-3">
+          {[
+            {
+              title: "Look",
+              body: "A real-world snippet with syntax highlighting — no toy textbook fluff.",
+            },
+            {
+              title: "Guess",
+              body: "What does it do? Where is it broken? Pick from a short multiple-choice set.",
+            },
+            {
+              title: "Learn",
+              body: "See the answer, why others fail, and a thought process you can reuse.",
+            },
+          ].map((item) => (
+            <div key={item.title}>
+              <h2 className="font-[family-name:var(--font-display)] text-2xl text-[var(--ink)]">
+                {item.title}
+              </h2>
+              <p className="mt-2 text-[var(--ink-muted)]">{item.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
