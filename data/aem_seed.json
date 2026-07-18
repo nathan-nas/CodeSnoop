@@ -1,0 +1,3481 @@
+[
+  {
+    "i": 0,
+    "q": "A customer needs to store approximately 200 raw data items from REST API and display each item as an AEM page. A draft page template exists. Which Method should be used to meet this requirement?",
+    "options": [
+      "Create Experience fragments by binding the data for each item using the draft page template and custom data retrieval logic",
+      "Build a segment using data from REST API call",
+      "Create pages by binding the data for each item using the draft page template and custom data retrieval logic",
+      "Create Content fragments by binding the data for each item using the draft page template and custom data retrieval logic"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Build a segment using data from REST API call",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "pages",
+      "templates"
+    ],
+    "difficulty": "medium",
+    "explanation": "Each REST item must become an AEM page using the draft page template with custom data binding/retrieval. Segments are for personalization, not page creation. Content Fragments and Experience Fragments do not create site pages from a page template in this scenario.",
+    "thought_process": "1) Requirement is display each item as an AEM page with a draft page template. 2) Segments do not create pages. 3) CF/XF are not page-template page creation. 4) Choose create pages.",
+    "snippet": "/* AEM \u00b7 content-fragments */\n// A customer needs to store approximately 200 raw data items from REST API and display each item as an AEM page. A draft page template exists. Which Method should be used to meet this requirement?",
+    "changed": true
+  },
+  {
+    "i": 1,
+    "q": "An AEM Developer receives requirements for Sling Models in a human-readable yaml format. A custom application needs to be built. The dependency is as shown: <dependency> <groupId> com.fasterxml.jackson.core </groupId> <artifactId> jackson-databind </artifactId> <version> 2.8.4 </version> <scope> provided </scope> </dependency> <dependency> <groupId> com.fasterxml.jackson.dataformat </groupId> <artifactId> jackson-datafirmat-yaml </artifactId> <version> 2.8.4 </version> </dependency>",
+    "options": [
+      "1. Create OSGI models to export as yaml. 2. Configure mime type in Apache Sling Servlet/ Script Resolver and Error Handler.",
+      "1. Create Sling models to export as yaml. 2. Configure mime type in Apache Sling Referrer Filter.",
+      "1. Create OSGI models to export as yaml. 2. Configure mime type in Apache Sling MIME Type Service.",
+      "1. Create Sling models to export as yaml. 2. Configure mime type in Apache Sling MIME Type Service."
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "1. Create Sling models to export as yaml. 2. Configure mime type in Apache Sling Referrer Filter.",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "Sling Models exporters (Jackson + jackson-dataformat-yaml) produce YAML. Register the YAML MIME/extension in Apache Sling MIME Type Service. Referrer Filter is unrelated; 'OSGi models' is not the Sling Models exporter feature.",
+    "thought_process": "1) Need Sling Models YAML export. 2) Exporters are Sling Models, not OSGi models. 3) MIME mapping belongs in MIME Type Service. 4) Choose Sling Models + MIME Type Service.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// An AEM Developer receives requirements for Sling Models in a human-readable yaml format. A custom application needs to be built. The dependency is as shown: <dependency> <groupId> com.fasterxml.jackson.core </groupId> <artifactId> jackson-databind </artifactId",
+    "changed": true
+  },
+  {
+    "i": 2,
+    "q": "A developer has multiple LDAP Authentication providers. The user is not required to pass the authentication test of the Authentication provider. If authentication succeeds, control is returned to the caller; no subsequent Authentication provider down the list is executed. . If authentication fails, authentication continues down the list of providers. What should be the JAAS Control flag value in Apache Jackrabbit Oak External Login Module configuration?",
+    "options": [
+      "OPTIONAL",
+      "SUFFICENT",
+      "REQUIRED",
+      "MANDATORY"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "OPTIONAL",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "oak",
+      "security",
+      "ldap"
+    ],
+    "difficulty": "medium",
+    "explanation": "JAAS SUFFICIENT means success returns immediately and later modules are skipped; failure continues down the list\u2014exactly the described multi-LDAP behavior. OPTIONAL never short-circuits on success; REQUIRED must succeed; MANDATORY is not a standard JAAS flag.",
+    "thought_process": "1) Success stops; failure continues. 2) That is SUFFICIENT (option b, spelled SUFFICENT). 3) OPTIONAL continues after success. 4) Reject REQUIRED/MANDATORY.",
+    "snippet": "/* AEM \u00b7 oak */\n// A developer has multiple LDAP Authentication providers. The user is not required to pass the authentication test of the Authentication provider. If authentication succeeds, control is returned to the caller; no subsequent Authentication provider down the list ",
+    "changed": true
+  },
+  {
+    "i": 3,
+    "q": "An AEM Developer needs to remove the pretitle option from within the Core Teaser components dialog. They start by: A. Creating a component with the Core Teaser component as its resourceSuperType B. Adding a _cq_dialog folder under the component",
+    "options": [
+      "1. create a file named dialog.xml inside that new folder. 2. copy the entire node structure from the Core Teaser component's dialog.xml 3. delete the pretitle node",
+      "1. create a file named .content.xml inside that new folder. 2. copy only the node structure that will be modified into .content.xml 3. add sling.hideChildren[pretitle] to the parent node of the pretitle node",
+      "1. navigate to the new component's dialog in CRX 2. delete the pretitle child node",
+      "1. navigate to /apps/core/wcm/components/teaser/v1/teaser/cq:dialog/content/items/tabs/items/text/items/columns/items/column/items in CRX 2. delete the pretitle child node"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "1. create a file named .content.xml inside that new folder. 2. copy only the node structure that will be modified into .content.xml 3. add sling.hideChildren[pretitle] to the parent node of the pretitle node",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "core-components",
+      "editable-templates"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: 1. create a file named .content.xml inside that new folder. 2. copy only the node structure that will be modified into .content.xml 3. add sling.hideChildren[pretitle] to the parent node of the pretitle node.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: 1. create a file named .content.xml inside that new folder. 2. copy only the node structure that will be modified into .content.xml 3. add s.",
+    "snippet": "/* AEM \u00b7 core-components */\n// An AEM Developer needs to remove the pretitle option from within the Core Teaser components dialog. They start by: A. Creating a component with the Core Teaser component as its resourceSuperType B. Adding a _cq_dialog folder under the component",
+    "changed": false
+  },
+  {
+    "i": 4,
+    "q": "An AEM application wants to be up multi-tenancy using Adobe-recommended best practices and bind multiple configurations to it. Which of the following options is recommended?",
+    "options": [
+      "import org.osgi.service.metatype.annotations.Component: @Component(service = ConfigurationFactory.class)",
+      "Import org.apache.felix.scrannotations.Component: @Component(label = My configuration, metatype=true, factory=true)",
+      "import org.osgi.service.component.annotations.Component:import org.osgi.service.metatype.annotations.Designate: @Component (service = ConfigurationFactory.class)@Designate (ocd= ConfigurationFactoryImpl.Config.class, factory=true)",
+      "import org.osgi.service.metatype.annotations.AttributeDefinition:import org.osgi.service.metatype.annotations.ObjectClassDefinition: @ObjectClassDefinition(name= My configuration)"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "import org.osgi.service.component.annotations.Component:import org.osgi.service.metatype.annotations.Designate: @Component (service = ConfigurationFactory.class)@Designate (ocd= ConfigurationFactoryImpl.Config.class, factory=true)",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: import org.osgi.service.component.annotations.Component:import org.osgi.service.metatype.annotations.Designate: @Component (service = ConfigurationFactory.class)@Designate (ocd= ConfigurationFactoryImpl.Config.class, factory=true).",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: import org.osgi.service.component.annotations.Component:import org.osgi.service.metatype.annotations.Designate: @Component (service = Config.",
+    "snippet": "/* AEM \u00b7 osgi */\n// An AEM application wants to be up multi-tenancy using Adobe-recommended best practices and bind multiple configurations to it. Which of the following options is recommended?",
+    "changed": false
+  },
+  {
+    "i": 5,
+    "q": "Which solution should be used to synchronize user permissions across AEM servers?",
+    "options": [
+      "ACS Commons ACL packager",
+      "Maven Vault plugin",
+      "Acs Commons Authorizable Packager",
+      "User Sync Tool"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "ACS Commons ACL packager",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "security",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: ACS Commons ACL packager.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: ACS Commons ACL packager.",
+    "snippet": "/* AEM \u00b7 security */\n// Which solution should be used to synchronize user permissions across AEM servers?",
+    "changed": false
+  },
+  {
+    "i": 6,
+    "q": "A developer has built a dropdown containing each of the fifty U.S. States as a static option. The dialog node is called states. A new requirement is asking to use that same dropdown in another components dialog. Which method would be a more modular approach to the solution?",
+    "options": [
+      "copy paste the entire state node from the old component to the new one.",
+      "1. Extrapolate out the states node to a more generic location. 2. Set that new location as the resourceSuperType.",
+      "copy and paste only the options from the old component to the new one",
+      "1. Extrapolate out the States node to a more generic location. 2. Use granite: include in both components to bring in only what is needed"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "1. Extrapolate out the States node to a more generic location. 2. Use granite: include in both components to bring in only what is needed",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: 1. Extrapolate out the States node to a more generic location. 2. Use granite: include in both components to bring in only what is needed.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: 1. Extrapolate out the States node to a more generic location. 2. Use granite: include in both components to bring in only what is needed.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer has built a dropdown containing each of the fifty U.S. States as a static option. The dialog node is called states. A new requirement is asking to use that same dropdown in another components dialog. Which method would be a more modular approach to",
+    "changed": false
+  },
+  {
+    "i": 7,
+    "q": "An AEM Developer is setting up a new AEM Project for a custom SPA that will utilize the SPA Editor. Which command should the developer use?",
+    "options": [
+      "mvn archetype: generate \\ -D archetypeGroupId=com.adobe.granite.archetypes \\ -D archetypeArtifactId=aem-project-archetype \\ -D archetypeVersion=23 \\ -D frontendModule=react",
+      "mvn -B archetype: generate \\ -D archetypeGroupId=com.adobe.granite.archetypes \\ -D archetypeArtifactId=aem-project-archetype \\ -D archetypeVersion=23 \\ -D frontendModule=angular",
+      "mvn archetype: generate \\ -D archetypeGroupId=com.adobe.granite.archetypes \\ -D archetypeArtifactId=aem-project-archetype \\ -D archetypeVersion=23 \\ -D frontendModule=general",
+      "mvn -B archetype: generate \\ -D archetypeGroupId=com.adobe.granite.archetypes \\ -D archetypeArtifactId=aem-project-archetype \\ -D archetypeVersion=23 \\ -D sdkVersione=latest"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "mvn -B archetype: generate \\ -D archetypeGroupId=com.adobe.granite.archetypes \\ -D archetypeArtifactId=aem-project-archetype \\ -D archetypeVersion=23 \\ -D frontendModule=angular",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "spa",
+      "archetype"
+    ],
+    "difficulty": "medium",
+    "explanation": "For an AEM Project Archetype SPA Editor app, set -DfrontendModule=react (or angular if Angular). React is the usual Adobe SPA Editor example; include -B for non-interactive generation when scripting.",
+    "thought_process": "1) Need SPA Editor frontend module. 2) Discard options missing a real SPA module. 3) Prefer react for a generic custom SPA unless Angular is specified.",
+    "snippet": "/* AEM \u00b7 spa */\n// An AEM Developer is setting up a new AEM Project for a custom SPA that will utilize the SPA Editor. Which command should the developer use?",
+    "changed": true
+  },
+  {
+    "i": 8,
+    "q": "A project requires sharing information between SPA components. Which is the least complex approach to achieve that objective?",
+    "options": [
+      "Utilize model props to drill down and access or set the state on desired components.",
+      "Centralize the logic and broadcast to the necessary components.",
+      "Implement a state library in order to share component states.",
+      "Customize and extend the container component to leverage the object hierarchy."
+    ],
+    "correct_letter": "b",
+    "correct_index": 0,
+    "correct_text": "Centralize the logic and broadcast to the necessary components.",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "spa",
+      "react",
+      "state"
+    ],
+    "difficulty": "medium",
+    "explanation": "Least complex sharing is passing model props down the tree. Centralized broadcast and state libraries add overhead; extending the container is more invasive than props for simple cases.",
+    "thought_process": "1) Ask for least complex. 2) Props drilling is simplest. 3) Redux/broadcast/container are heavier. 4) Choose model props.",
+    "snippet": "/* AEM \u00b7 spa */\n// A project requires sharing information between SPA components. Which is the least complex approach to achieve that objective?",
+    "changed": true
+  },
+  {
+    "i": 9,
+    "q": "An AEM application requires LDAP Service integration to synchronize users/groups. Which two OSGI configuration are required for LDAP integration in AEM?(Choose Two.)",
+    "options": [
+      "Apache Jackrabbit Oak Default Sync Handler",
+      "Apache Jackrabbit Oak Solr server provider",
+      "Apache Jackrabbit Oak CUG Configuration",
+      "Apache Jackrabbit Oak AuthorizableActionProvider",
+      "Apache Jackrabbit Oak External Login Module"
+    ],
+    "correct_letter": "e",
+    "correct_index": 4,
+    "correct_text": "Apache Jackrabbit Oak External Login Module",
+    "fixed_index": 4,
+    "topic_tags": [
+      "aem",
+      "oak",
+      "osgi",
+      "security"
+    ],
+    "difficulty": "hard",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: Apache Jackrabbit Oak External Login Module. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Apache Jackrabbit Oak External Login Module.",
+    "snippet": "/* AEM \u00b7 oak */\n// An AEM application requires LDAP Service integration to synchronize users/groups. Which two OSGI configuration are required for LDAP integration in AEM?(Choose Two.)",
+    "changed": false
+  },
+  {
+    "i": 10,
+    "q": "Which configuration/section should be used to resolve the domain name by dispatcher?",
+    "options": [
+      "Configuration in httpd.conf",
+      "Configuration in vhosts file",
+      "Configuration in DNS",
+      "Configuration in filter.any"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Configuration in vhosts file",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "dispatcher"
+    ],
+    "difficulty": "medium",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: Configuration in vhosts file.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Configuration in vhosts file.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// Which configuration/section should be used to resolve the domain name by dispatcher?",
+    "changed": false
+  },
+  {
+    "i": 11,
+    "q": "Which configuration takes precedence at runtime, When multiple configurations exist in AEM?",
+    "options": [
+      "Any .config files from <cq-installation-dir>/crx-quickstart/launchpad/config/.... On the local",
+      "Repository nodes with type sling:OsgiConfig under /libs/*/config",
+      "Configuration that exist in the Web Console",
+      "Repository nodes under /apps/*/config"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Repository nodes under /apps/*/config",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "At runtime, OSGi configs edited in the Web Console override repository configs under /apps and /libs until restart/persist rules apply. /apps still beats /libs for deployed configs, but the console is the highest live precedence among the listed options.",
+    "thought_process": "1) Compare launchpad files, /libs, Web Console, /apps. 2) Live console edits win at runtime. 3) Pick Web Console.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which configuration takes precedence at runtime, When multiple configurations exist in AEM?",
+    "changed": true
+  },
+  {
+    "i": 12,
+    "q": "A developer needs to make template T available as a child page of page P. The developer has determined that: Template T matches cq:allowedTemplates property on page P. Template T has no atlowedPaths Property set. Template T is not in the same application as page P. The template of page P has no match on the allowedParents property of template T. Template T has no match on the allowedTemplate property on the temptate of page P. What should the developer change?",
+    "options": [
+      "Make the allowedParents property of template T match the template of page P.",
+      "Make Page P match allowedPaths property of template T.",
+      "Clear the attowedParents property of template T.",
+      "Migrate template T to the same application as Page P."
+    ],
+    "correct_letter": "c",
+    "correct_index": 0,
+    "correct_text": "Clear the attowedParents property of template T.",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "templates",
+      "pages"
+    ],
+    "difficulty": "hard",
+    "explanation": "cq:allowedTemplates already matches, but allowedParents on T does not match P's template. Align allowedParents to P's template. Clearing also works but is looser; application migration is not the stated failing check.",
+    "thought_process": "1) allowedTemplates already OK. 2) Failure is allowedParents mismatch. 3) Make allowedParents match P's template. 4) Reject path-only/clear-first as best fix.",
+    "snippet": "/* AEM \u00b7 editable-templates */\n// A developer needs to make template T available as a child page of page P. The developer has determined that: Template T matches cq:allowedTemplates property on page P. Template T has no atlowedPaths Property set. Template T is not in the same application as pa",
+    "changed": true
+  },
+  {
+    "i": 13,
+    "q": "An AEM developer sets an arguments variable myVariable to be consumed by workflow process in the same workflow model definition.",
+    "options": [
+      "//GET myVariable from args String args = metaDataMap.get(PROCESS_ARGS, String.class);",
+      "//GET myVariable directly from MetaDataMap String myVariable = workItem.getMetaDataMap().get(myVariable);",
+      "//GET myVariable from HistoryItem object List < HistoryItem>history = workflowSession.getHistory(workItem.getWorkflow());",
+      "//GET myVariable from WorkflowData String myVariable = workItem.getWorkflowData.getPayload90.toString();"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "//GET myVariable from args String args = metaDataMap.get(PROCESS_ARGS, String.class);",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: //GET myVariable from args String args = metaDataMap.get(PROCESS_ARGS, String.class);.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: //GET myVariable from args String args = metaDataMap.get(PROCESS_ARGS, String.class);.",
+    "snippet": "/* AEM \u00b7 workflow */\n// An AEM developer sets an arguments variable myVariable to be consumed by workflow process in the same workflow model definition.",
+    "changed": false
+  },
+  {
+    "i": 14,
+    "q": "An AEM Developer needs to automate tests for the user interface. Which tool is provided in the AEM Framework for automated UI testing?",
+    "options": [
+      "Sinon",
+      "Jasmine",
+      "HobbesJS",
+      "Mocha"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "HobbesJS",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "testing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: HobbesJS.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: HobbesJS.",
+    "snippet": "/* AEM \u00b7 testing */\n// An AEM Developer needs to automate tests for the user interface. Which tool is provided in the AEM Framework for automated UI testing?",
+    "changed": false
+  },
+  {
+    "i": 15,
+    "q": "An AEM application development team is assigned a task to create an Event-Driven Data Layer implementation for an analytics solution. Which Adobe recommended best practice should the developer choose?",
+    "options": [
+      "Use Adobe Client Data Layer and Integrate with Core components",
+      "Use Adobe Experience Platform's data layer to integrate with AEM",
+      "Create an Adobe Cloud Service configurations to use third-party tools data layer",
+      "Create a custom data layer and each component, template and its properties to the data layer"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Use Adobe Client Data Layer and Integrate with Core components",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "cloud-service",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Use Adobe Client Data Layer and Integrate with Core components.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Use Adobe Client Data Layer and Integrate with Core components.",
+    "snippet": "/* AEM \u00b7 cloud-service */\n// An AEM application development team is assigned a task to create an Event-Driven Data Layer implementation for an analytics solution. Which Adobe recommended best practice should the developer choose?",
+    "changed": false
+  },
+  {
+    "i": 16,
+    "q": "An AEM Developer needs to create a log file for the project. Which next step should the developer take?",
+    "options": [
+      "Create a log file under /libs/system/configuration... specific runmode folder(s)",
+      "Create a log file under /apps/system/configuration... specific runmode folder(s)",
+      "Ask AMS/DevOps for admin access to create a log file via console",
+      "Create a log file under /apps/myproject/configuration... specific runmode folder(s)"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Create a log file under /apps/myproject/configuration... specific runmode folder(s)",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Create a log file under /apps/myproject/configuration... specific runmode folder(s).",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Create a log file under /apps/myproject/configuration... specific runmode folder(s).",
+    "snippet": "/* AEM \u00b7 osgi */\n// An AEM Developer needs to create a log file for the project. Which next step should the developer take?",
+    "changed": false
+  },
+  {
+    "i": 17,
+    "q": "What type of configuration can be created in OSGI Configuration Manager?",
+    "options": [
+      "Run modes Configuration",
+      "Service Configuration",
+      "Components Configurations",
+      "Bundles Configurations"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Bundles Configurations",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi Configuration Manager creates/edits configurations for OSGi services. It does not create runmodes; 'bundles configurations' is incorrect terminology.",
+    "thought_process": "1) What configMgr creates. 2) Service configurations. 3) Not runmodes/bundles. 4) Choose Service Configuration.",
+    "snippet": "/* AEM \u00b7 osgi */\n// What type of configuration can be created in OSGI Configuration Manager?",
+    "changed": true
+  },
+  {
+    "i": 18,
+    "q": "AMS recommends a team to upgrade AEM servers with in-place upgrade because the existing version has reached EOL. What are two disadvantages of performing an in-place Upgrade to the latest version of AEM?(Choose two.)",
+    "options": [
+      "Content migration is required.",
+      "Content revision history is not preserved.",
+      "Depending on the version difference between the old and new instances, the upgrade can be a long and arduous process.",
+      "ACLs, users, and groups are lost",
+      "Complex developers setup and automation of the upgrade process."
+    ],
+    "correct_letter": "e",
+    "correct_index": 4,
+    "correct_text": "Complex developers setup and automation of the upgrade process.",
+    "fixed_index": 4,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Complex developers setup and automation of the upgrade process.. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Complex developers setup and automation of the upgrade process..",
+    "snippet": "/* AEM \u00b7 security */\n// AMS recommends a team to upgrade AEM servers with in-place upgrade because the existing version has reached EOL. What are two disadvantages of performing an in-place Upgrade to the latest version of AEM?(Choose two.)",
+    "changed": false
+  },
+  {
+    "i": 19,
+    "q": "SPA components are connected to MM components via the MapTo0 method. Which code should be used to correctly connect an SPA component called Itembst to its MM equivalent?",
+    "options": [
+      "MapTo('project/components/content/itemList')(ItemList. ItemListEditConfig);",
+      "MapTo(ItemList)('project/components/content/itemList',ItemListEditConfig):",
+      "('project/components/content/itemList').MapTo(ItemList,ItemListEditConfig);",
+      "ItemList.MapTo('project/components/content/itemList'):"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "MapTo('project/components/content/itemList')(ItemList. ItemListEditConfig);",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "spa"
+    ],
+    "difficulty": "medium",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: MapTo('project/components/content/itemList')(ItemList. ItemListEditConfig);.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: MapTo('project/components/content/itemList')(ItemList. ItemListEditConfig);.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// SPA components are connected to MM components via the MapTo0 method. Which code should be used to correctly connect an SPA component called Itembst to its MM equivalent?",
+    "changed": false
+  },
+  {
+    "i": 20,
+    "q": "The OSGi configuration is added to a run mode specific configuration config.author.staging in AEM as a Cloud service. This application fails to read the configuration. What is the possible cause of the issue?",
+    "options": [
+      "The custom OSGi configuration runmode used (i.e., config.author.staging) is not supported in AEM as a Cloud service",
+      "Only <service> Specific OSGI configuration runmodes like config.author OR config.publish are supported in AEM as a Cloud service.",
+      "OSGi configurations runmodes cannot be installed automatically on AEM as a Cloud Service we need to install them as a package using the package manager",
+      "AEM as a Cloud service does not support OSGi configuration runmodes"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "The custom OSGi configuration runmode used (i.e., config.author.staging) is not supported in AEM as a Cloud service",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "packages",
+      "cloud-service"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: The custom OSGi configuration runmode used (i.e., config.author.staging) is not supported in AEM as a Cloud service.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: The custom OSGi configuration runmode used (i.e., config.author.staging) is not supported in AEM as a Cloud service.",
+    "snippet": "/* AEM \u00b7 osgi */\n// The OSGi configuration is added to a run mode specific configuration config.author.staging in AEM as a Cloud service. This application fails to read the configuration. What is the possible cause of the issue?",
+    "changed": false
+  },
+  {
+    "i": 21,
+    "q": "AS per Latest AEM archetype what are two primary purpose of the it:launcher module? (Choose Two)",
+    "options": [
+      "Bundle up the code that deploys ui.tests to the server",
+      "Package up JUnit tests that will later be executed server-side",
+      "Bundle all Hobbes tests for automating UI tests",
+      "Hold all mock data used for Junit testing",
+      "Trigger remote Junit execution"
+    ],
+    "correct_letter": "e",
+    "correct_index": 4,
+    "correct_text": "Trigger remote Junit execution",
+    "fixed_index": 4,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "archetype",
+      "packages"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Trigger remote Junit execution. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Trigger remote Junit execution.",
+    "snippet": "/* AEM \u00b7 osgi */\n// AS per Latest AEM archetype what are two primary purpose of the it:launcher module? (Choose Two)",
+    "changed": false
+  },
+  {
+    "i": 22,
+    "q": "Which option should be used to synchronize user data across publish servers in a publish farm?",
+    "options": [
+      "Using Vault plugin",
+      "Using Sling Distribution",
+      "Replication Agents",
+      "Using CURL"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Using Sling Distribution",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "packages",
+      "replication"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Using Sling Distribution.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Using Sling Distribution.",
+    "snippet": "/* AEM \u00b7 packages */\n// Which option should be used to synchronize user data across publish servers in a publish farm?",
+    "changed": false
+  },
+  {
+    "i": 23,
+    "q": "An AEM Developer creates a custom OAK index for /content/mywebsite under /oak:index node. While testing the live site. It is found that the index is not being applied to any query within the website. Default Lucene indexes with high cost are being picked up by the AEM. What is the most likely of the issue?",
+    "options": [
+      "The custom OAK Lucene index must be replaced with OAK Lucene Property index",
+      "The Custom Oak Lucene index must include boost property to rank it higher than default Lucene index",
+      "The Custom OAK Lucene index is missing evaluatePathRestrictions property and queryPaths property",
+      "The Custom OAK lucene index is missing evaluatePathRestrictions property and includedPaths Property"
+    ],
+    "correct_letter": "a",
+    "correct_index": 3,
+    "correct_text": "The custom OAK Lucene index must be replaced with OAK Lucene Property index",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "oak",
+      "indexing"
+    ],
+    "difficulty": "hard",
+    "explanation": "Path-scoped Lucene indexes need evaluatePathRestrictions with includedPaths/queryPaths. Without path config, default indexes win. Boost or switching to property index is not the usual fix.",
+    "thought_process": "1) Custom index not selected. 2) Missing path restriction properties. 3) includedPaths + evaluatePathRestrictions common fix. 4) Reject boost/replace answers.",
+    "snippet": "/* AEM \u00b7 oak */\n// An AEM Developer creates a custom OAK index for /content/mywebsite under /oak:index node. While testing the live site. It is found that the index is not being applied to any query within the website. Default Lucene indexes with high cost are being picked up by",
+    "changed": true
+  },
+  {
+    "i": 24,
+    "q": "A Custom application contains Bundle A and Bundle B. Bundle A has a dependency to Bundle B via Import-Package. How can both bundles be deployed most efficiently across all the environments?",
+    "options": [
+      "Create one content package per bundle and use a package dependency to ensure installation order",
+      "Embed both bundles in one content package and user property installationOrder in package properties for correct bundle installation order",
+      "Embed both bundles in one content package the dependency via import-Package is enough to ensure correct installation",
+      "Use the Felix Web Console to upload the bundle in the correct order"
+    ],
+    "correct_letter": "a",
+    "correct_index": 2,
+    "correct_text": "Create one content package per bundle and use a package dependency to ensure installation order",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "packages",
+      "bundles"
+    ],
+    "difficulty": "medium",
+    "explanation": "Embed both bundles in one package; OSGi Import-Package wiring resolves dependencies without installationOrder or split packages. Felix manual upload is not efficient for all environments.",
+    "thought_process": "1) A depends on B via Import-Package. 2) OSGi resolves wiring. 3) One package embedding both is enough. 4) Choose c.",
+    "snippet": "/* AEM \u00b7 osgi */\n// A Custom application contains Bundle A and Bundle B. Bundle A has a dependency to Bundle B via Import-Package. How can both bundles be deployed most efficiently across all the environments?",
+    "changed": true
+  },
+  {
+    "i": 25,
+    "q": "AEM SPAs PageModelManager leverages the JSON MODEL EXPORTER. Which two meta field are exposed through that exporter? (Choose Two)",
+    "options": [
+      "parent",
+      "resource",
+      "type",
+      "length",
+      "children"
+    ],
+    "correct_letter": "e",
+    "correct_index": 4,
+    "correct_text": "children",
+    "fixed_index": 4,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "spa"
+    ],
+    "difficulty": "hard",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: children. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: children.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// AEM SPAs PageModelManager leverages the JSON MODEL EXPORTER. Which two meta field are exposed through that exporter? (Choose Two)",
+    "changed": false
+  },
+  {
+    "i": 26,
+    "q": "While Working Editable Templates, the author reports that the changes that the author makes are lost periodically. What should the AEM Developer fix to prevent losing author updates?",
+    "options": [
+      "Set mode to be merge in the filter.xml",
+      "Set mode to be update in the filter.xml",
+      "Move the affected editable template to etc/templates",
+      "Move the affected editable template to apps/templates"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Set mode to be merge in the filter.xml",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "packages",
+      "editable-templates"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Set mode to be merge in the filter.xml.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Set mode to be merge in the filter.xml.",
+    "snippet": "/* AEM \u00b7 packages */\n// While Working Editable Templates, the author reports that the changes that the author makes are lost periodically. What should the AEM Developer fix to prevent losing author updates?",
+    "changed": false
+  },
+  {
+    "i": 27,
+    "q": "AEM supports traditional, Headless and Hybrid delivery capabilities in various ways. Which of the following are the tools enabling Omnichannel experience capabilities in AEM ?",
+    "options": [
+      "1. Sling Modal Exporter for Content Fragments and Experience Fragments 2. AEM Assets HTTP API 3. GraphsQL API for content Fragments and Experience Fragments",
+      "1. Sling Modal Exporter for Content Fragments and Experience Fragments 2. GraphsQL API for Content Fragments and Experience Fragments 3. Content Services",
+      "1. AEM Assets HTTP API 2. GraphsQL API for content Fragments and Experience Fragments 3. Content Services",
+      "1. Sling Modal Exporter for Content Fragments and Experience Fragments 2. AEM Assets HTTP API 3. Content Services"
+    ],
+    "correct_letter": "c",
+    "correct_index": 3,
+    "correct_text": "1. AEM Assets HTTP API 2. GraphsQL API for content Fragments and Experience Fragments 3. Content Services",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "headless",
+      "content-services",
+      "content-fragments"
+    ],
+    "difficulty": "hard",
+    "explanation": "Valid omnichannel tools include Sling Model Exporter (CF/XF), Assets HTTP API, and Content Services. GraphQL is for Content Fragments, not Experience Fragments, so options claiming GraphQL for XF are inaccurate.",
+    "thought_process": "1) List headless tools. 2) GraphQL \u2260 XF. 3) Drop GraphQL-for-XF options. 4) Choose Sling Model Exporter + Assets HTTP API + Content Services.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// AEM supports traditional, Headless and Hybrid delivery capabilities in various ways. Which of the following are the tools enabling Omnichannel experience capabilities in AEM ?",
+    "changed": true
+  },
+  {
+    "i": 28,
+    "q": "A customer adds third-party client libraries to add some features in an existing AEM application which will significantly reduce performance What is the best option for the AEM Developer to optimize the site?",
+    "options": [
+      "Embed client libraries to consolidate them into fewer files",
+      "Debug third-party client lib and fix the code",
+      "Create new AEM application from Scratch",
+      "Rebuild Client libraries"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Embed client libraries to consolidate them into fewer files",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "clientlibs"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Embed client libraries to consolidate them into fewer files.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Embed client libraries to consolidate them into fewer files.",
+    "snippet": "/* AEM \u00b7 clientlibs */\n// A customer adds third-party client libraries to add some features in an existing AEM application which will significantly reduce performance What is the best option for the AEM Developer to optimize the site?",
+    "changed": false
+  },
+  {
+    "i": 29,
+    "q": "An AEM application must process a high volume of content ingestion on the author server. What is a key factor to optimize a design for overall performance gain for implementing workflows?",
+    "options": [
+      "Allocate more RAM for the content ingestion up front",
+      "Run Garbage collection every time content ingestion occurs",
+      "Use Schedulers to run the workflow only on weekends",
+      "Use Transient workflows"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Use Transient workflows",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: Use Transient workflows.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Use Transient workflows.",
+    "snippet": "/* AEM \u00b7 workflow */\n// An AEM application must process a high volume of content ingestion on the author server. What is a key factor to optimize a design for overall performance gain for implementing workflows?",
+    "changed": false
+  },
+  {
+    "i": 30,
+    "q": "A developer wants to extend a core component so what property that developer has to use?",
+    "options": [
+      "Sling:resourceType",
+      "Sling:resourceSuperType",
+      "Placeholder answer since Platform does not support 2 answers"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Sling:resourceSuperType",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Sling:resourceSuperType.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Sling:resourceSuperType.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer wants to extend a core component so what property that developer has to use?",
+    "changed": false
+  },
+  {
+    "i": 31,
+    "q": "A developer has a requirement of custom component which needs whole core component functionality but only one tab is not required. So which property can be used for this purpose?",
+    "options": [
+      "Sling:orderBefore",
+      "Sling:hideResource",
+      "Sling:hideChildren"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Sling:hideResource",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Sling:hideResource.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Sling:hideResource.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer has a requirement of custom component which needs whole core component functionality but only one tab is not required. So which property can be used for this purpose?",
+    "changed": false
+  },
+  {
+    "i": 32,
+    "q": "A Project has a transient workflow. But a specific step defeats the purpose of making workflow to transient. creates a sling job to proceed further and generates error messages in log files. To make it better which step must be removed?",
+    "options": [
+      "Participant Step",
+      "Process Step",
+      "Container Step",
+      "Participant Chooser Step"
+    ],
+    "correct_letter": "b",
+    "correct_index": 0,
+    "correct_text": "Process Step",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "workflow",
+      "transient-workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Participant steps require persisted work items and defeat transient workflows. Remove the Participant Step (not a normal Process Step).",
+    "thought_process": "1) Transient workflow broken. 2) Participant steps force persistence. 3) Process step is not the classic breaker. 4) Choose Participant Step.",
+    "snippet": "/* AEM \u00b7 workflow */\n// A Project has a transient workflow. But a specific step defeats the purpose of making workflow to transient. creates a sling job to proceed further and generates error messages in log files. To make it better which step must be removed?",
+    "changed": true
+  },
+  {
+    "i": 33,
+    "q": "Developer wants to print Hello World in only edit mode. What should be the HTL?",
+    "options": [
+      "data-sly-test=${wcmmode.editor}",
+      "data-sly-test=${wcmmode.edit}",
+      "data-sly-test=${wcm.edit}"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "data-sly-test=${wcmmode.edit}",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "HTL (Sightly) uses data-sly-* block statements and expression language; the correct syntax/option is: data-sly-test=${wcmmode.edit}.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: data-sly-test=${wcmmode.edit}.",
+    "snippet": "/* AEM \u00b7 htl */\n// Developer wants to print Hello World in only edit mode. What should be the HTL?",
+    "changed": false
+  },
+  {
+    "i": 34,
+    "q": "An AEM application must be highly available and scalable in distributed geographical scenario. Which approach should be used to meet the requirement?",
+    "options": [
+      "Oak Cluster with MongoMK Failover Across Multiple Datacenters",
+      "TarMK Cold Standby",
+      "TarMK Farm",
+      "Oak Cluster with MongoMK Failover in a Single Datacenter"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Oak Cluster with MongoMK Failover Across Multiple Datacenters",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Oak Cluster with MongoMK Failover Across Multiple Datacenters.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Oak Cluster with MongoMK Failover Across Multiple Datacenters.",
+    "snippet": "/* AEM \u00b7 oak */\n// An AEM application must be highly available and scalable in distributed geographical scenario. Which approach should be used to meet the requirement?",
+    "changed": false
+  },
+  {
+    "i": 35,
+    "q": "What a developer must use to use jcr:property in java variable?",
+    "options": [
+      "Sling Model",
+      "Crx De",
+      "HTL"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Sling Model",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Sling Model.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Sling Model.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// What a developer must use to use jcr:property in java variable?",
+    "changed": false
+  },
+  {
+    "i": 36,
+    "q": "A developer wants to consume AEM Page Data in a Single Page Application. The Single page Application is coded to understand JSON format. Only page content should be exposed through JSON. All the existing components are based on foundation components. Which change should the developer make in the existing components to support this requirement?",
+    "options": [
+      "Implement a sling Model Exporter for the components",
+      "Invoke the page URL with the extension json to get the values to construct the required output",
+      "Create a custom sling event handler to handle JSON requests",
+      "Add JSON as the default extension in Apache Sling Servlet/Script Resolver and Error Handler Configuration"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Implement a sling Model Exporter for the components",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "sling-models"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Implement a sling Model Exporter for the components.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Implement a sling Model Exporter for the components.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// A developer wants to consume AEM Page Data in a Single Page Application. The Single page Application is coded to understand JSON format. Only page content should be exposed through JSON. All the existing components are based on foundation components. Which cha",
+    "changed": false
+  },
+  {
+    "i": 37,
+    "q": "What is the default value for AC Handling when creating packages?",
+    "options": [
+      "Overwrite",
+      "MergePreserve",
+      "Ignore",
+      "Merge"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Ignore",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Ignore.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Ignore.",
+    "snippet": "/* AEM \u00b7 packages */\n// What is the default value for AC Handling when creating packages?",
+    "changed": false
+  },
+  {
+    "i": 38,
+    "q": "A developer wants to replace element name of host element with titleLevel property of model in HTL. What should be the HTL for the same.",
+    "options": [
+      "<div data-sly-element= ${titleLevel} @context= something></div>",
+      "<data-sly-use.element= ${titleLevel}></div>",
+      "<div data-sly-attribute= ${titleLevel}></div>"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "<div data-sly-element= ${titleLevel} @context= something></div>",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "HTL (Sightly) uses data-sly-* block statements and expression language; the correct syntax/option is: <div data-sly-element= ${titleLevel} @context= something></div>.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: <div data-sly-element= ${titleLevel} @context= something></div>.",
+    "snippet": "/* AEM \u00b7 htl */\n// A developer wants to replace element name of host element with titleLevel property of model in HTL. What should be the HTL for the same.",
+    "changed": false
+  },
+  {
+    "i": 39,
+    "q": "An AEM Developer needs to create a new component to help support a new product launch. The client is on AEM 6.5 on-premise with the latest version of WCM Core Components The component must include text, image, and a link The component must support multiple designs Which process should the AEM Developer use to support the launch?",
+    "options": [
+      "1. Create a new component by extending the Text Component from Core Components 2. Add dialog properties and modify HTL to support images",
+      "1. Extend the Text Component from Core Components 2. Enable image manipulations for the Text Component via policy",
+      "1. Extend the Teaser Component from Core Components 2. Create style variations to be used in the Style System",
+      "1. Create a new Image with Text component that exposes the Core Components authoring dialogs for those components 2. Add a policy to define which designs are used"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "1. Extend the Teaser Component from Core Components 2. Create style variations to be used in the Style System",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "htl",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: 1. Extend the Teaser Component from Core Components 2. Create style variations to be used in the Style System.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: 1. Extend the Teaser Component from Core Components 2. Create style variations to be used in the Style System.",
+    "snippet": "/* AEM \u00b7 htl */\n// An AEM Developer needs to create a new component to help support a new product launch. The client is on AEM 6.5 on-premise with the latest version of WCM Core Components The component must include text, image, and a link The component must support multiple des",
+    "changed": false
+  },
+  {
+    "i": 40,
+    "q": "An AEM server is overloaded with too many concurrently running workflows. The developer decides to reduce the number of concurrent workflows. What should be configured to reduce the number of concurrent workflows?",
+    "options": [
+      "The number of threads in scheduler",
+      "Launchers for each workflow",
+      "The number of threads in Apache Felix Jetty Http Service",
+      "Maximum parallel jobs in OSGI console"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Maximum parallel jobs in OSGI console",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: Maximum parallel jobs in OSGI console.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Maximum parallel jobs in OSGI console.",
+    "snippet": "/* AEM \u00b7 osgi */\n// An AEM server is overloaded with too many concurrently running workflows. The developer decides to reduce the number of concurrent workflows. What should be configured to reduce the number of concurrent workflows?",
+    "changed": false
+  },
+  {
+    "i": 41,
+    "q": "An AEM application must implement user testing using AEM Mocks. Which two service does the Class AemContext provide developers access to?(Choose two.)",
+    "options": [
+      "FlushAgent",
+      "WorkflowSession",
+      "ModelFactory",
+      "TagManager",
+      "Session"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "TagManager",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "workflow",
+      "testing"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: TagManager. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: TagManager.",
+    "snippet": "/* AEM \u00b7 workflow */\n// An AEM application must implement user testing using AEM Mocks. Which two service does the Class AemContext provide developers access to?(Choose two.)",
+    "changed": false
+  },
+  {
+    "i": 42,
+    "q": "While using the custom workflow model on multiple assets / pages , workflow instance is getting started for each asset/page. Which property can be enabled to start a single workflow instance if multiple assets / pages are subjected?",
+    "options": [
+      "Multi-Resource Support",
+      "Transient Workflow",
+      "Multi-Resource Helper"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Multi-Resource Support",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: Multi-Resource Support.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Multi-Resource Support.",
+    "snippet": "/* AEM \u00b7 workflow */\n// While using the custom workflow model on multiple assets / pages , workflow instance is getting started for each asset/page. Which property can be enabled to start a single workflow instance if multiple assets / pages are subjected?",
+    "changed": false
+  },
+  {
+    "i": 43,
+    "q": "Author has OSGI component: @Component ( service = Servlet . class , property ={ ServletResolverConstants . SLING_SERVLET_PATHS +..... something ServletResolverConstants . SLING_SERVLET_METHODS + something ...}) public class SomeServlet { .............. } How can author use Apache felix web console to disable servlet?",
+    "options": [
+      "Component tab>Check OSGi component is listed>click disable",
+      "Bundle Resource provider tab>Check OSGi component is listed>click disable",
+      "Service tab>Check OSGi component is listed>click disable"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Component tab>Check OSGi component is listed>click disable",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: Component tab>Check OSGi component is listed>click disable.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Component tab>Check OSGi component is listed>click disable.",
+    "snippet": "/* AEM \u00b7 osgi */\n// Author has OSGI component: @Component ( service = Servlet . class , property ={ ServletResolverConstants . SLING_SERVLET_PATHS +..... something ServletResolverConstants . SLING_SERVLET_METHODS + something ...}) public class SomeServlet { .............. } How c",
+    "changed": false
+  },
+  {
+    "i": 44,
+    "q": "Where Should an AEM Developer add a front-end dependency?",
+    "options": [
+      "vault.xml",
+      "settings.xml",
+      "package.json",
+      "config.json"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "package.json",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: package.json.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: package.json.",
+    "snippet": "/* AEM \u00b7 packages */\n// Where Should an AEM Developer add a front-end dependency?",
+    "changed": false
+  },
+  {
+    "i": 45,
+    "q": "A developer wants a custom component that has functionality of core component so what component he needs to create?",
+    "options": [
+      "Proxy Component",
+      "Core component",
+      "Custom Component"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Proxy Component",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Proxy Component.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Proxy Component.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer wants a custom component that has functionality of core component so what component he needs to create?",
+    "changed": false
+  },
+  {
+    "i": 46,
+    "q": "What will be the correct syntax for getting request attribute in sling model? (choose two)",
+    "options": [
+      "@Inject @Source(request-attributes) @Named(testParam)",
+      "@Inject(name= testParam)",
+      "@RequestAttribute(testParam)"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "@RequestAttribute(testParam)",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "sling-models"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: @RequestAttribute(testParam). The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: @RequestAttribute(testParam).",
+    "snippet": "/* AEM \u00b7 sling-models */\n// What will be the correct syntax for getting request attribute in sling model? (choose two)",
+    "changed": false
+  },
+  {
+    "i": 47,
+    "q": "An AEM application is required to create absolute urls for the web domain on which the application is supported to run. The developer wants to create the absolute urls in the server to facilitate other use cases for SEO and Analytics Which of the following options would work for the developer?",
+    "options": [
+      "Configure apache rewrite rules to create the absolute urls",
+      "Configure Day CQ Link Externalizer to add a domain mapping to Author Server and Publisher",
+      "Configure Day CQ Link Externalizer to remove the author domain",
+      "Configure Day CQ Link Externalizer to add a domain mapping to Publisher/Web Server"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Configure Day CQ Link Externalizer to add a domain mapping to Publisher/Web Server",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Configure Day CQ Link Externalizer to add a domain mapping to Publisher/Web Server.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Configure Day CQ Link Externalizer to add a domain mapping to Publisher/Web Server.",
+    "snippet": "/* AEM \u00b7 concepts */\n// An AEM application is required to create absolute urls for the web domain on which the application is supported to run. The developer wants to create the absolute urls in the server to facilitate other use cases for SEO and Analytics Which of the following opt",
+    "changed": false
+  },
+  {
+    "i": 48,
+    "q": "What is Out of Scope for the Pattern Detector tool, while doing an AEM upgrade?",
+    "options": [
+      "OSGI bundles exports and imports mismatch",
+      "Backward Compatibility with the previous AEM version",
+      "Rep:User nodes compatibility(in context of OAuth configuration)",
+      "Definitions of Oak indices for compatibility"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Backward Compatibility with the previous AEM version",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "oak",
+      "osgi",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Backward Compatibility with the previous AEM version.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Backward Compatibility with the previous AEM version.",
+    "snippet": "/* AEM \u00b7 oak */\n// What is Out of Scope for the Pattern Detector tool, while doing an AEM upgrade?",
+    "changed": false
+  },
+  {
+    "i": 49,
+    "q": "Where a developer needs to write the business logic in java?",
+    "options": [
+      "Core",
+      "Ui.apps",
+      "Ui.config"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Core",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "archetype"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Core.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Core.",
+    "snippet": "/* AEM \u00b7 archetype */\n// Where a developer needs to write the business logic in java?",
+    "changed": false
+  },
+  {
+    "i": 50,
+    "q": "A Client has asked to share an HTML Version of test coverage report for the AEM project. What plugin should the AEM developer use to generate test coverage report using latest archetype?",
+    "options": [
+      "<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-pmd-plugin</artifactId>.....</plugin>",
+      "<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle- plugin</artifactId>.....</plugin>",
+      "<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId>.....</plugin>",
+      "<plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>selenium-maven-plugin</artifactId>.....</plugin>"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "<plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId>.....</plugin>",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "archetype"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId>.....</plugin>.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-surefire-plugin</artifactId>.....</plugin>.",
+    "snippet": "/* AEM \u00b7 archetype */\n// A Client has asked to share an HTML Version of test coverage report for the AEM project. What plugin should the AEM developer use to generate test coverage report using latest archetype?",
+    "changed": false
+  },
+  {
+    "i": 51,
+    "q": "Which tool allows assets to be shared with multiple AEM instances as read-only local assets?",
+    "options": [
+      "Package Manager",
+      "Connected Assets",
+      "Asset Link Share",
+      "Felix Console"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Connected Assets",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Connected Assets.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Connected Assets.",
+    "snippet": "/* AEM \u00b7 osgi */\n// Which tool allows assets to be shared with multiple AEM instances as read-only local assets?",
+    "changed": false
+  },
+  {
+    "i": 52,
+    "q": "How to get metadata of workflow by using java snippet?",
+    "options": [
+      "WorkflowDataMap wfd = workflowItem.getWorkFlow().getMetaDataMap(); wfd.Put(key, Value);",
+      "WorkflowDataMap wfd = workflowItem.getMetaDataMap(); wfd.Put(key, Value);",
+      "WorkflowDataMap wfd = workflowItem.getWorkflow().getWorkflowData().getMetaDataMap(); wfd.Put(key, Value);"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "WorkflowDataMap wfd = workflowItem.getWorkflow().getWorkflowData().getMetaDataMap(); wfd.Put(key, Value);",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: WorkflowDataMap wfd = workflowItem.getWorkflow().getWorkflowData().getMetaDataMap(); wfd.Put(key, Value);.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: WorkflowDataMap wfd = workflowItem.getWorkflow().getWorkflowData().getMetaDataMap(); wfd.Put(key, Value);.",
+    "snippet": "/* AEM \u00b7 workflow */\n// How to get metadata of workflow by using java snippet?",
+    "changed": false
+  },
+  {
+    "i": 53,
+    "q": "Which URI should be used to configure a Flush Agent for a dispatcher listening on port 8080?",
+    "options": [
+      "http://<dispatcherHost>:8080/invalidate.cache",
+      "http://<dispatcherHost>:8080/dispatcher/invalidate.cache",
+      "http://<dispatcherHost>:8080/dispatcher/cache.invalidate",
+      "http://<dispatcherHost>:8080/cache.invalidate"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "http://<dispatcherHost>:8080/dispatcher/invalidate.cache",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "dispatcher",
+      "replication"
+    ],
+    "difficulty": "easy",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: http://<dispatcherHost>:8080/dispatcher/invalidate.cache.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: http://<dispatcherHost>:8080/dispatcher/invalidate.cache.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// Which URI should be used to configure a Flush Agent for a dispatcher listening on port 8080?",
+    "changed": false
+  },
+  {
+    "i": 54,
+    "q": "An AEM application requires a service user WRITE access to children nodes but not on the parent node itself. Which console should the developer use to apply appropriate ACL?",
+    "options": [
+      "User Management console",
+      "Group Management console",
+      "OAuth Clients console",
+      "Permission console"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Permission console",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Permission console.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Permission console.",
+    "snippet": "/* AEM \u00b7 security */\n// An AEM application requires a service user WRITE access to children nodes but not on the parent node itself. Which console should the developer use to apply appropriate ACL?",
+    "changed": false
+  },
+  {
+    "i": 55,
+    "q": "A developer is using sling context-aware configuration trying to get the configuration resource using: @Reference Private configurationResourceResolver cfgResourceResolver ; confResource = cfgResourceResolver . getResource ( resource , Bucket_NAME , CONFIG_NAME ); This works as intended in author and in publish when logged in to publish as admin. However this gives a null when run as anonymous.",
+    "options": [
+      "Apply read permissions to anonymous user for /content directory",
+      "Apply read permissions to anonymous user for /conf directory",
+      "Apply read permissions to anonymous user for /etc directory",
+      "Apply write permissions to anonymous user for /conf directory"
+    ],
+    "correct_letter": "c",
+    "correct_index": 1,
+    "correct_text": "Apply read permissions to anonymous user for /etc directory",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "sling-caconfig",
+      "security",
+      "conf"
+    ],
+    "difficulty": "medium",
+    "explanation": "Context-aware config lives under /conf; anonymous publish needs read on /conf. /etc is wrong; write for anonymous is wrong.",
+    "thought_process": "1) CACONFIG from /conf. 2) Works as admin, null as anonymous. 3) Grant anonymous read on /conf. 4) Reject /etc.",
+    "snippet": "/* AEM \u00b7 security */\n// A developer is using sling context-aware configuration trying to get the configuration resource using: @Reference Private configurationResourceResolver cfgResourceResolver ; confResource = cfgResourceResolver . getResource ( resource , Bucket_NAME , CONFIG_NAM",
+    "changed": true
+  },
+  {
+    "i": 56,
+    "q": "A developer needs to create various content fragments depending on some dynamic names by writing Java code. Which code should be used to create a new content fragment?",
+    "options": [
+      "FragmentTemplate.createFragment()",
+      "resource.createFragment",
+      "adaptTo(Fragment.class)"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "FragmentTemplate.createFragment()",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "content-fragments"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: FragmentTemplate.createFragment().",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: FragmentTemplate.createFragment().",
+    "snippet": "/* AEM \u00b7 content-fragments */\n// A developer needs to create various content fragments depending on some dynamic names by writing Java code. Which code should be used to create a new content fragment?",
+    "changed": false
+  },
+  {
+    "i": 57,
+    "q": "A developer has requirement to add a new custom tab to the page properties of a specific page. The sling:resourceType of the page is foo/components/page and the sling:resourceSuperType of that page is core/wcm/components/page/v2/page. What is the best approach?",
+    "options": [
+      "1. Copy the cq:dialog from app/core/wcm/components/page/v2/page to app/foo/components/page 2. Remove all the tabs 3. Add the custom tab",
+      "1. Create a new cq:dialog node under app/foo/components/page 2. Add the nodes cq:dialog > content > items 3. Add the custom tab after that node",
+      "1. Identify the location of the cq:dialog node from app/core/wcm/components/page/v2/page 2. Identify the last entry of items node 3. Add the custom tab after that node",
+      "1. Copy the cq:dialog from app/core/wcm/components/page/v2/page to app/foo/components/page 2. Identify the last entry of items node 3. Add the custom tab after that node"
+    ],
+    "correct_letter": "a",
+    "correct_index": 1,
+    "correct_text": "1. Copy the cq:dialog from app/core/wcm/components/page/v2/page to app/foo/components/page 2. Remove all the tabs 3. Add the custom tab",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "dialog",
+      "page-properties",
+      "sling-resource-merger"
+    ],
+    "difficulty": "hard",
+    "explanation": "Add a page-properties tab by overlaying cq:dialog under the page proxy and merging only the new tab so Core tabs remain inherited. Copying the whole dialog and deleting tabs loses inheritance; editing core is not upgrade-safe.",
+    "thought_process": "1) Proxy page of core page. 2) Merger overlay for new tab. 3) Don't copy/remove all tabs. 4) Don't edit /apps/core.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer has requirement to add a new custom tab to the page properties of a specific page. The sling:resourceType of the page is foo/components/page and the sling:resourceSuperType of that page is core/wcm/components/page/v2/page. What is the best approach",
+    "changed": true
+  },
+  {
+    "i": 58,
+    "q": "A customer is having trouble with some search queries and provides the following information: The logs show the following warring occurs many times: *WARN* Traversed 1000 nodes with filter Filter (query = SELECt ..) The Client has more than 100000 stored in their AEM instance The client uses a custom page property to help search for pages of a given type What should the AEM Developer do to help resolve the clients issue?",
+    "options": [
+      "Create a custom oak index for the custom page property",
+      "Set the reindex flag to true for node 'oak:index/cqPageLucene'",
+      "Advise the client to recognize their content by having nodes of no more than 10000 sub nodes.",
+      "Use the Index Manager to validate the 'cqPageLucene' index is enabled"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Create a custom oak index for the custom page property",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "medium",
+    "explanation": "Oak query/index design must match predicates and path restrictions. Correct approach: Create a custom oak index for the custom page property.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Create a custom oak index for the custom page property.",
+    "snippet": "/* AEM \u00b7 oak */\n// A customer is having trouble with some search queries and provides the following information: The logs show the following warring occurs many times: *WARN* Traversed 1000 nodes with filter Filter (query = SELECt ..) The Client has more than 100000 stored in th",
+    "changed": false
+  },
+  {
+    "i": 59,
+    "q": "While doing an in-place AEM upgrade, the developer observes an issue in the server logs where all are active excepts for the ACS Commons bundle which is incompatible due to old versions. What should the developer do to resolve this issue?",
+    "options": [
+      "Drop the new package uder path crx-quickstart/install and restart",
+      "Install the new jar using the package manager on the old environment",
+      "Update the plugin in pom.xml",
+      "Ask to Admin credentials & install the new bundle in Felix console"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Update the plugin in pom.xml",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Update the plugin in pom.xml.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Update the plugin in pom.xml.",
+    "snippet": "/* AEM \u00b7 osgi */\n// While doing an in-place AEM upgrade, the developer observes an issue in the server logs where all are active excepts for the ACS Commons bundle which is incompatible due to old versions. What should the developer do to resolve this issue?",
+    "changed": false
+  },
+  {
+    "i": 60,
+    "q": "Select * from [nt:base] as s where s.status=some value What should be the property of index. (choose two)",
+    "options": [
+      "Status node with propertyIndex value as true",
+      "Index Rule",
+      "Status node with propertyIndex value as false",
+      "Aggregates"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Index Rule",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "hard",
+    "explanation": "Oak query/index design must match predicates and path restrictions. Correct approach: Index Rule. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Index Rule.",
+    "snippet": "/* AEM \u00b7 oak */\n// Select * from [nt:base] as s where s.status=some value What should be the property of index. (choose two)",
+    "changed": false
+  },
+  {
+    "i": 61,
+    "q": "While configuring Content Fragment Component author has selected Display Mode as Single Text element . This enables the selection of one Multi-Line text element and enables paragraph control options. Which two properties will now determine the resulting paragraph system?(choose two)",
+    "options": [
+      "Paragraph range",
+      "Paragraph title/paragraph heading",
+      "Paragraph scope",
+      "Paragraph description"
+    ],
+    "correct_letter": "d",
+    "correct_index": 0,
+    "correct_text": "Paragraph description",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "content-fragments",
+      "components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Single Text element mode paragraph controls are Paragraph Scope and Paragraph Range.",
+    "thought_process": "1) Single text + paragraph controls. 2) Scope and range. 3) Reject title/description. 4) Pair a and c; fixed index uses a.",
+    "snippet": "/* AEM \u00b7 content-fragments */\n// While configuring Content Fragment Component author has selected Display Mode as Single Text element . This enables the selection of one Multi-Line text element and enables paragraph control options. Which two properties will now determine the resulting paragr",
+    "changed": true
+  },
+  {
+    "i": 62,
+    "q": "What is the file store used for Networking File Storage(NFS)?",
+    "options": [
+      "S3 Data Storage",
+      "Content Repository",
+      "File Data Store"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "File Data Store",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: File Data Store.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: File Data Store.",
+    "snippet": "/* AEM \u00b7 concepts */\n// What is the file store used for Networking File Storage(NFS)?",
+    "changed": false
+  },
+  {
+    "i": 63,
+    "q": "What should be the resourceType node for osgi configuration node in the repository?",
+    "options": [
+      "jcr:osgiConfig",
+      "sling:osgiConfig",
+      "crx:osgiConfig"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "sling:osgiConfig",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: sling:osgiConfig.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: sling:osgiConfig.",
+    "snippet": "/* AEM \u00b7 osgi */\n// What should be the resourceType node for osgi configuration node in the repository?",
+    "changed": false
+  },
+  {
+    "i": 64,
+    "q": "The SAML 2.0 Authentication Handler is disabled by default. You must set at least one of the following properties in order to enable the handler? (Choose two)",
+    "options": [
+      "The Service Provider Entity ID",
+      "Path",
+      "The Identity Provider POST URL"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "The Identity Provider POST URL",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: The Identity Provider POST URL. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: The Identity Provider POST URL.",
+    "snippet": "/* AEM \u00b7 security */\n// The SAML 2.0 Authentication Handler is disabled by default. You must set at least one of the following properties in order to enable the handler? (Choose two)",
+    "changed": false
+  },
+  {
+    "i": 65,
+    "q": "A developer Wants to send a SAML Authentication request to a specific url of a system entity that creates , manages and updates identity information. Which property of SAML Authentication Handler configuration must be configured with this url?",
+    "options": [
+      "Identity provider url",
+      "Path",
+      "Default Redirect"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Identity provider url",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Identity provider url.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Identity provider url.",
+    "snippet": "/* AEM \u00b7 security */\n// A developer Wants to send a SAML Authentication request to a specific url of a system entity that creates , manages and updates identity information. Which property of SAML Authentication Handler configuration must be configured with this url?",
+    "changed": false
+  },
+  {
+    "i": 66,
+    "q": "Which of the following is included in the Service Pack release Notes? (Choose two)",
+    "options": [
+      "Jar file download link",
+      "Known Issues",
+      "Deprecated features"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Deprecated features",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Deprecated features. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Deprecated features.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which of the following is included in the Service Pack release Notes? (Choose two)",
+    "changed": false
+  },
+  {
+    "i": 67,
+    "q": "Which offload related service is used by each aem instance to connect with aem topology connector?",
+    "options": [
+      "Topology connector service",
+      "Cluster service",
+      "Discovery service"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Discovery service",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Discovery service.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Discovery service.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which offload related service is used by each aem instance to connect with aem topology connector?",
+    "changed": false
+  },
+  {
+    "i": 68,
+    "q": "Source and brand are added in the ignoreParamUrl. So which url will be passed? / ignoreParamUrl {{ / glob \"*\" / type \"deny\" } { /glob \"source\" / type \"allow\" } { /glob \"brand\" / type \"allow\" } }",
+    "options": [
+      "url?source=value&brand=value2&param=value3",
+      "url?source=value",
+      "url?source=value&param=value3"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "url?source=value&brand=value2&param=value3",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: url?source=value&brand=value2&param=value3.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: url?source=value&brand=value2&param=value3.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Source and brand are added in the ignoreParamUrl. So which url will be passed? / ignoreParamUrl {{ / glob \"*\" / type \"deny\" } { /glob \"source\" / type \"allow\" } { /glob \"brand\" / type \"allow\" } }",
+    "changed": false
+  },
+  {
+    "i": 69,
+    "q": "What is packageType for immutable code packages in maven project?",
+    "options": [
+      "<packageType>application</packageType>",
+      "<packageType>content</packageType>",
+      "<packageType>container</packageType>"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "<packageType>application</packageType>",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: <packageType>application</packageType>.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: <packageType>application</packageType>.",
+    "snippet": "/* AEM \u00b7 packages */\n// What is packageType for immutable code packages in maven project?",
+    "changed": false
+  },
+  {
+    "i": 70,
+    "q": "A developer need to use AEM core components in prod without need to download and install core component. Which aem version would be use ?",
+    "options": [
+      "AEM as Cloud Service",
+      "Version 6.3",
+      "Adobe managed services"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "AEM as Cloud Service",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "cloud-service",
+      "core-components"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: AEM as Cloud Service.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: AEM as Cloud Service.",
+    "snippet": "/* AEM \u00b7 cloud-service */\n// A developer need to use AEM core components in prod without need to download and install core component. Which aem version would be use ?",
+    "changed": false
+  },
+  {
+    "i": 71,
+    "q": "A developer needs to remove selectors from this url 'path/page.woo.foo.html' so what should be the syntax? (choose two)",
+    "options": [
+      "${ 'path/page.woo.foo.html' @removeSelectors[foo,bar]}",
+      "${ 'path/page.woo.foo.html' @removeSelectors{foo,bar,woo}}",
+      "${ 'path/page.woo.foo.html' @selectors=}",
+      "${ 'path/page.woo.foo.html' @selectors}"
+    ],
+    "correct_letter": "d",
+    "correct_index": 2,
+    "correct_text": "${ 'path/page.woo.foo.html' @selectors}",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "htl",
+      "selectors"
+    ],
+    "difficulty": "hard",
+    "explanation": "Remove selectors with an empty selectors option (@selectors= / selectors=[]) or removeSelectors list. Bare @selectors is incomplete; brace syntax is invalid.",
+    "thought_process": "1) Remove selectors from URL. 2) Empty selectors or removeSelectors. 3) Reject bare @selectors and braces. 4) Fixed index uses c.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A developer needs to remove selectors from this url 'path/page.woo.foo.html' so what should be the syntax? (choose two)",
+    "changed": true
+  },
+  {
+    "i": 72,
+    "q": "A content author will use live copies on aem. Which 2 factors he need to consider?",
+    "options": [
+      "Changes done locally to a component which is marked as container will not be overwritten",
+      "When reverting a canceled inheritance on a paragraph system the order of components will be changed",
+      "When inheritance is re-enabled, page is auto sync with source",
+      "If component is marked as container, cancellation and suspend actions dont apply for child comp"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "If component is marked as container, cancellation and suspend actions dont apply for child comp",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: If component is marked as container, cancellation and suspend actions dont apply for child comp.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: If component is marked as container, cancellation and suspend actions dont apply for child comp.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A content author will use live copies on aem. Which 2 factors he need to consider?",
+    "changed": false
+  },
+  {
+    "i": 73,
+    "q": "While exporting the Experience Fragment to json what selector should be used?",
+    "options": [
+      "plain",
+      "text",
+      "nocss"
+    ],
+    "correct_letter": "c",
+    "correct_index": 0,
+    "correct_text": "nocss",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "experience-fragments",
+      "json-exporter"
+    ],
+    "difficulty": "medium",
+    "explanation": "Experience Fragment export uses the plain selector. nocss/text are not the Adobe XF export selector for this question.",
+    "thought_process": "1) Export XF. 2) plain selector. 3) nocss incorrect. 4) Choose plain.",
+    "snippet": "/* AEM \u00b7 experience-fragments */\n// While exporting the Experience Fragment to json what selector should be used?",
+    "changed": true
+  },
+  {
+    "i": 74,
+    "q": "Which property of maven is used to build an aem project with specific version ?",
+    "options": [
+      "<packageVersion>",
+      "<version>",
+      "<aemVersion>"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "<version>",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: <version>.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: <version>.",
+    "snippet": "/* AEM \u00b7 packages */\n// Which property of maven is used to build an aem project with specific version ?",
+    "changed": false
+  },
+  {
+    "i": 75,
+    "q": "A Developer need to export Experience Fragment to adobe Target then what should be the format for exported experience fragment?",
+    "options": [
+      "HTML",
+      "XML",
+      "JSON"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "HTML",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "experience-fragments"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: HTML.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: HTML.",
+    "snippet": "/* AEM \u00b7 experience-fragments */\n// A Developer need to export Experience Fragment to adobe Target then what should be the format for exported experience fragment?",
+    "changed": false
+  },
+  {
+    "i": 76,
+    "q": "Where we can define global properties for the project?",
+    "options": [
+      "<properties></properties> in parent pom",
+      "<properties></properties> in core pom",
+      "<properties></properties> in all module"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "<properties></properties> in parent pom",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: <properties></properties> in parent pom.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: <properties></properties> in parent pom.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Where we can define global properties for the project?",
+    "changed": false
+  },
+  {
+    "i": 77,
+    "q": "To overwrite OSGi Configurations where a developer must write the code in codebase?",
+    "options": [
+      "Ui.content",
+      "Ui.apps",
+      "Core"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Ui.apps",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "archetype"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: Ui.apps.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Ui.apps.",
+    "snippet": "/* AEM \u00b7 osgi */\n// To overwrite OSGi Configurations where a developer must write the code in codebase?",
+    "changed": false
+  },
+  {
+    "i": 78,
+    "q": "A developer wants to create a index with multiple properties and it needs to be updated asynchronously.",
+    "options": [
+      "Property",
+      "Ordered",
+      "Lucene"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Lucene",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "medium",
+    "explanation": "Oak query/index design must match predicates and path restrictions. Correct approach: Lucene.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Lucene.",
+    "snippet": "/* AEM \u00b7 oak */\n// A developer wants to create a index with multiple properties and it needs to be updated asynchronously.",
+    "changed": false
+  },
+  {
+    "i": 79,
+    "q": "What should we set for debug log for SAML?",
+    "options": [
+      "com.adobe.granite.auth.saml",
+      "com.adobe.sling.auth.saml",
+      "com.adobe.granite.debug.auth.saml"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "com.adobe.granite.auth.saml",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: com.adobe.granite.auth.saml.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: com.adobe.granite.auth.saml.",
+    "snippet": "/* AEM \u00b7 security */\n// What should we set for debug log for SAML?",
+    "changed": false
+  },
+  {
+    "i": 80,
+    "q": "Author wants to define blueprint configuration to identify existing website that will be used as source for other pages. Which 2 rules must content author follow ?",
+    "options": [
+      "The root of each language has at least 2 child pages",
+      "Immediate child page of root are language branches of website.",
+      "The website should have a single page as root",
+      "Each language page must have a country child page"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "The website should have a single page as root",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "msm"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: The website should have a single page as root.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: The website should have a single page as root.",
+    "snippet": "/* AEM \u00b7 msm */\n// Author wants to define blueprint configuration to identify existing website that will be used as source for other pages. Which 2 rules must content author follow ?",
+    "changed": false
+  },
+  {
+    "i": 81,
+    "q": "What will you see at maintenance screen on this : http://localhost:4502/libs/granite/operations/content/maintenance.html",
+    "options": [
+      "Quarterly",
+      "Daily",
+      "Monthly"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Daily",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Daily.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Daily.",
+    "snippet": "/* AEM \u00b7 concepts */\n// What will you see at maintenance screen on this : http://localhost:4502/libs/granite/operations/content/maintenance.html",
+    "changed": false
+  },
+  {
+    "i": 82,
+    "q": "A developer is starting an aem instance every time in the debug mode by providing JVM parameter in the console. The author needs to automate this process to avoid adding JVM parameters at every start of an AEM instance. How would developer achieve this goal?",
+    "options": [
+      "By adding JVM parameters to the start script",
+      "By adding JVM parameters to the [runMode] / crxquikstart/conf/quikstart.properties",
+      "By adding the OSGI Configuration AEM-start to true"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "By adding JVM parameters to the start script",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: By adding JVM parameters to the start script.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: By adding JVM parameters to the start script.",
+    "snippet": "/* AEM \u00b7 osgi */\n// A developer is starting an aem instance every time in the debug mode by providing JVM parameter in the console. The author needs to automate this process to avoid adding JVM parameters at every start of an AEM instance. How would developer achieve this goal?",
+    "changed": false
+  },
+  {
+    "i": 83,
+    "q": "Two methods used to update cache?",
+    "options": [
+      "Restart publish instance",
+      "Content update",
+      "Restart author instance",
+      "Auto-invalidation on dispatcher"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Auto-invalidation on dispatcher",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "dispatcher"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Auto-invalidation on dispatcher.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Auto-invalidation on dispatcher.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// Two methods used to update cache?",
+    "changed": false
+  },
+  {
+    "i": 84,
+    "q": "In AEM, one needs a feature to able to explicitly clear dispatcher resources. Which method is preferred?",
+    "options": [
+      "Enable explicit cache invalidation feature in cloud manager",
+      "Create Servlet, which makes HTTP request to dispatcher",
+      "Use Replication API with flush agent"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Use Replication API with flush agent",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "dispatcher",
+      "cloud-service",
+      "replication"
+    ],
+    "difficulty": "medium",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: Use Replication API with flush agent.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Use Replication API with flush agent.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// In AEM, one needs a feature to able to explicitly clear dispatcher resources. Which method is preferred?",
+    "changed": false
+  },
+  {
+    "i": 85,
+    "q": "What is the plugin name used to clean the target folder?",
+    "options": [
+      "maven-clean-plugin",
+      "mvn-clean-plugin",
+      "clean-plugin"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "maven-clean-plugin",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: maven-clean-plugin.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: maven-clean-plugin.",
+    "snippet": "/* AEM \u00b7 concepts */\n// What is the plugin name used to clean the target folder?",
+    "changed": false
+  },
+  {
+    "i": 86,
+    "q": "What will be the default response of dispatcher if it is deny for some url in /filter property?",
+    "options": [
+      "400",
+      "404",
+      "403"
+    ],
+    "correct_letter": "c",
+    "correct_index": 1,
+    "correct_text": "403",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "dispatcher",
+      "security",
+      "filter"
+    ],
+    "difficulty": "medium",
+    "explanation": "Dispatcher /filter deny defaults to HTTP 404, not 403.",
+    "thought_process": "1) Filter deny status. 2) Default 404. 3) 403 is a common misconception. 4) Choose 404.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// What will be the default response of dispatcher if it is deny for some url in /filter property?",
+    "changed": true
+  },
+  {
+    "i": 87,
+    "q": "Which of the following two configuration will be applied when the instance will be started having runmodes author,dev,emea?",
+    "options": [
+      "/apps/*/config.author.dev.emea.ldap",
+      "/apps/*/config.publish",
+      "/apps/*/config.author.emea.dev",
+      "/apps/*/config.author"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "/apps/*/config.author",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: /apps/*/config.author.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: /apps/*/config.author.",
+    "snippet": "/* AEM \u00b7 osgi */\n// Which of the following two configuration will be applied when the instance will be started having runmodes author,dev,emea?",
+    "changed": false
+  },
+  {
+    "i": 88,
+    "q": "Which service is used in aem to control how its instance interact with topology while running?",
+    "options": [
+      "Offloading Service",
+      "Web console Service",
+      "Placeholder answer since Platform does not support 2 answers"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Offloading Service",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Offloading Service.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Offloading Service.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which service is used in aem to control how its instance interact with topology while running?",
+    "changed": false
+  },
+  {
+    "i": 89,
+    "q": "A developer is working on AEM as cloud so what is the Golden Master?",
+    "options": [
+      "Publish node",
+      "Content Repository",
+      "Cloud Manager with github repo",
+      "Author node"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Cloud Manager with github repo",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "cloud-service"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Cloud Manager with github repo.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Cloud Manager with github repo.",
+    "snippet": "/* AEM \u00b7 cloud-service */\n// A developer is working on AEM as cloud so what is the Golden Master?",
+    "changed": false
+  },
+  {
+    "i": 90,
+    "q": "Which URI should be used to configure a flush agent for port 80 on a local testing server?",
+    "options": [
+      "//localhost:80/dispatcher/validate.flush",
+      "//localhost:80/dispatcher/invalidate.cache",
+      "//localhost:80/dispatcher/validate.cache",
+      "//localhost:80/dispatcher/invalidate.flush"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "//localhost:80/dispatcher/invalidate.cache",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "dispatcher",
+      "testing",
+      "replication"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: //localhost:80/dispatcher/invalidate.cache.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: //localhost:80/dispatcher/invalidate.cache.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// Which URI should be used to configure a flush agent for port 80 on a local testing server?",
+    "changed": false
+  },
+  {
+    "i": 91,
+    "q": "An instance of AEM has been upgraded from 5.6 to 6.0 and then 6.5. Which three OSGi configurations are needed to integrate LDAP with this upgraded instance of AEM? (Choose three.)",
+    "options": [
+      "Authentication Handler",
+      "SSL Certificate",
+      "LDAP IDP",
+      "Sync Handler",
+      "External Login Module"
+    ],
+    "correct_letter": "e",
+    "correct_index": 4,
+    "correct_text": "External Login Module",
+    "fixed_index": 4,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "security"
+    ],
+    "difficulty": "hard",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: External Login Module.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: External Login Module.",
+    "snippet": "/* AEM \u00b7 osgi */\n// An instance of AEM has been upgraded from 5.6 to 6.0 and then 6.5. Which three OSGi configurations are needed to integrate LDAP with this upgraded instance of AEM? (Choose three.)",
+    "changed": false
+  },
+  {
+    "i": 92,
+    "q": "A developer must create a workflow step that assigns a 'WorkItem' to the appropriate person based on who has the least amount work to do. The group that must perform the action is configured into the workflow. Which non-deprecated interface should the Java implementation class use to perform the assignment?",
+    "options": [
+      "com.adobe.granite.workflow.exec.ParticipantStepChooser",
+      "com.day.cq.workflow.exec.ParticipantChooser",
+      "com.day.cq.workflow.exec.WorkItem",
+      "com.adobe.granite.workflow.exec.WorkflowData"
+    ],
+    "correct_letter": "b",
+    "correct_index": 0,
+    "correct_text": "com.day.cq.workflow.exec.ParticipantChooser",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "workflow",
+      "java-api"
+    ],
+    "difficulty": "medium",
+    "explanation": "Use non-deprecated com.adobe.granite.workflow.exec.ParticipantStepChooser. day.cq ParticipantChooser is deprecated.",
+    "thought_process": "1) Dynamic participant chooser. 2) Granite ParticipantStepChooser. 3) day.cq API deprecated. 4) Choose a.",
+    "snippet": "/* AEM \u00b7 workflow */\n// A developer must create a workflow step that assigns a 'WorkItem' to the appropriate person based on who has the least amount work to do. The group that must perform the action is configured into the workflow. Which non-deprecated interface should the Java imp",
+    "changed": true
+  },
+  {
+    "i": 93,
+    "q": "For each CRX node in the hierarchy, which actions can be configured using the user admin interface?",
+    "options": [
+      "Read, Modify, Create, Delete, Read ACL, Edit ACL, Replicate",
+      "Read, Modify, Create, Delete, Read ACL, Edit ACL",
+      "Read, Write, Read ACL, Edit ACL, Replicate",
+      "Read, Write, Delete, Edit ACL, Replicate"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Read, Modify, Create, Delete, Read ACL, Edit ACL, Replicate",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Read, Modify, Create, Delete, Read ACL, Edit ACL, Replicate.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Read, Modify, Create, Delete, Read ACL, Edit ACL, Replicate.",
+    "snippet": "/* AEM \u00b7 security */\n// For each CRX node in the hierarchy, which actions can be configured using the user admin interface?",
+    "changed": false
+  },
+  {
+    "i": 94,
+    "q": "A development team wants to use the recommended language for the Oak query engine. This team wants to also avoid using the deprecated language for the Oak query engine and cannot use JQOM for the current project. Which languages should be used? Choose two answers.",
+    "options": [
+      "XPath",
+      "SQL",
+      "XML",
+      "SQL-2"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "SQL-2",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "hard",
+    "explanation": "Oak query/index design must match predicates and path restrictions. Correct approach: SQL-2. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: SQL-2.",
+    "snippet": "/* AEM \u00b7 oak */\n// A development team wants to use the recommended language for the Oak query engine. This team wants to also avoid using the deprecated language for the Oak query engine and cannot use JQOM for the current project. Which languages should be used? Choose two answ",
+    "changed": false
+  },
+  {
+    "i": 95,
+    "q": "A developer is installing a content package with the package manager. The developer needs to restrict the approximate number of nodes in a batch that is saved to persistent storage in one transaction. How should the developer modify the number of transient nodes to be triggered until automatic saving?",
+    "options": [
+      "Select the option MergePreserve for the Access Control Handling drop-down in the Install Package dialog-box",
+      "Modify the export package manifest header and copy the content package to AEM installation folder",
+      "Change the value of Save Threshold in the Install Package dialog-box",
+      "AEM instances automatically modify the number of transient nodes based on the load balancing"
+    ],
+    "correct_letter": "a",
+    "correct_index": 2,
+    "correct_text": "Select the option MergePreserve for the Access Control Handling drop-down in the Install Package dialog-box",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Save Threshold controls how many nodes are batched per save during package install. MergePreserve is ACL handling.",
+    "thought_process": "1) Limit transient nodes per save. 2) Save Threshold. 3) MergePreserve \u2260 batch size. 4) Choose Save Threshold.",
+    "snippet": "/* AEM \u00b7 packages */\n// A developer is installing a content package with the package manager. The developer needs to restrict the approximate number of nodes in a batch that is saved to persistent storage in one transaction. How should the developer modify the number of transient nod",
+    "changed": true
+  },
+  {
+    "i": 96,
+    "q": "A developer wants to extend AEM Core Components to create a custom Carousel Component. How should the developer extend the Core Components?",
+    "options": [
+      "Copy the Core Carousel component to /apps/ folder",
+      "Use the sling:resourceType property to point to the core component",
+      "Use the sling:resourceSuperType property to point to the core component",
+      "Make changes to the original component and assign a component group"
+    ],
+    "correct_letter": "a",
+    "correct_index": 2,
+    "correct_text": "Copy the Core Carousel component to /apps/ folder",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "core-components",
+      "sling"
+    ],
+    "difficulty": "easy",
+    "explanation": "Extend Core Carousel via sling:resourceSuperType proxy. Do not copy or edit core under /apps.",
+    "thought_process": "1) Extend core carousel. 2) resourceSuperType. 3) Copying core is anti-pattern. 4) Choose c.",
+    "snippet": "/* AEM \u00b7 core-components */\n// A developer wants to extend AEM Core Components to create a custom Carousel Component. How should the developer extend the Core Components?",
+    "changed": true
+  },
+  {
+    "i": 97,
+    "q": "In an instance of AEM, queries with full-text conditions are not working as expected. A developer creates a new node under oak:index and names the node LucenedIndex. Which properties and values need to be added to this node to make the node a full text index? (Choose two answers.)",
+    "options": [
+      "async: async",
+      "includePropertyNames: [full]",
+      "type: lucene",
+      "reindex: true"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "type: lucene",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "hard",
+    "explanation": "Oak query/index design must match predicates and path restrictions. Correct approach: type: lucene. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: type: lucene.",
+    "snippet": "/* AEM \u00b7 oak */\n// In an instance of AEM, queries with full-text conditions are not working as expected. A developer creates a new node under oak:index and names the node LucenedIndex. Which properties and values need to be added to this node to make the node a full text index? ",
+    "changed": false
+  },
+  {
+    "i": 98,
+    "q": "When configuring a logger for SAML, which value is needed for the Logger property?",
+    "options": [
+      "logs/saml.log",
+      "Debug",
+      "com.adobe.sling.auth.saml",
+      "com.adobe.granite.auth.saml"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "com.adobe.granite.auth.saml",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: com.adobe.granite.auth.saml.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: com.adobe.granite.auth.saml.",
+    "snippet": "/* AEM \u00b7 security */\n// When configuring a logger for SAML, which value is needed for the Logger property?",
+    "changed": false
+  },
+  {
+    "i": 99,
+    "q": "An AEM website needs its content delivered as JSON with headless endpoints. Which two characteristics of development fit under the mold of a headless model for development? (Choose two.)",
+    "options": [
+      "Content is delivered via AEM Components",
+      "Styling happens outside the AEM platform",
+      "SPAs can be a destination for AEM content",
+      "Content is only delivered through HTML files"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "SPAs can be a destination for AEM content",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: SPAs can be a destination for AEM content. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: SPAs can be a destination for AEM content.",
+    "snippet": "/* AEM \u00b7 concepts */\n// An AEM website needs its content delivered as JSON with headless endpoints. Which two characteristics of development fit under the mold of a headless model for development? (Choose two.)",
+    "changed": false
+  },
+  {
+    "i": 100,
+    "q": "A developer is using GraphQL to deliver a content fragment. The developer needs the missing piece to the code to retrieve the listed items in JSON format. Which word is needed for the missing code? { personList { items { _path firstName lastName title } } }",
+    "options": [
+      "call",
+      "get",
+      "query",
+      "retrieve"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "query",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "oak",
+      "content-fragments"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: query.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: query.",
+    "snippet": "/* AEM \u00b7 oak */\n// A developer is using GraphQL to deliver a content fragment. The developer needs the missing piece to the code to retrieve the listed items in JSON format. Which word is needed for the missing code? { personList { items { _path firstName lastName title } } }",
+    "changed": false
+  },
+  {
+    "i": 101,
+    "q": "A developer has the BylinelmplTest.java file open and needs to create an AEM context for setting up a test involving mock data. Which line of code should be added above the code to declare the BylinelmpTest class?",
+    "options": [
+      "@ExtendWith(AemContent.class)",
+      "@ExtendWith(AemContext.class)",
+      "@ExtendWith(AemContextExtension.class)",
+      "@ExtendWith(AemExtension.class)"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "@ExtendWith(AemContextExtension.class)",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "testing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: @ExtendWith(AemContextExtension.class).",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: @ExtendWith(AemContextExtension.class).",
+    "snippet": "/* AEM \u00b7 testing */\n// A developer has the BylinelmplTest.java file open and needs to create an AEM context for setting up a test involving mock data. Which line of code should be added above the code to declare the BylinelmpTest class?",
+    "changed": false
+  },
+  {
+    "i": 102,
+    "q": "An AEM implementation, version 6 has custom Login Modules. A group wants to upgrade the implementation to 6.5. What needs to be done with the custom login modules?",
+    "options": [
+      "The custom modules need to be deleted and then recreated after the upgrade",
+      "The LoginModule parameter needs to be added to the custom module",
+      "Nothing",
+      "The custom modules need to be disabled and then recreated after the upgrade"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Nothing",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Nothing.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Nothing.",
+    "snippet": "/* AEM \u00b7 security */\n// An AEM implementation, version 6 has custom Login Modules. A group wants to upgrade the implementation to 6.5. What needs to be done with the custom login modules?",
+    "changed": false
+  },
+  {
+    "i": 103,
+    "q": "When setting up filters for an AEM instance, which should be the first filter in the dispatcher.any file if best practices are followed?",
+    "options": [
+      "{ /type \"deny\" /all \"*\" }",
+      "{ /type \"allow\" /glob \"*\" }",
+      "{ /type \"allow\" /all \"*\" }",
+      "{ /type \"deny\" /glob \"*\" }"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "{ /type \"deny\" /glob \"*\" }",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "dispatcher"
+    ],
+    "difficulty": "medium",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: { /type \"deny\" /glob \"*\" }.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: { /type \"deny\" /glob \"*\" }.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// When setting up filters for an AEM instance, which should be the first filter in the dispatcher.any file if best practices are followed?",
+    "changed": false
+  },
+  {
+    "i": 104,
+    "q": "A developer wants to write and run UI tests directly in a web browser. Which testing library should the developer use?",
+    "options": [
+      "React.js",
+      "Angular.js",
+      "Hobbes.js",
+      "Bobcat,js"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Hobbes.js",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "spa",
+      "testing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Hobbes.js.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Hobbes.js.",
+    "snippet": "/* AEM \u00b7 spa */\n// A developer wants to write and run UI tests directly in a web browser. Which testing library should the developer use?",
+    "changed": false
+  },
+  {
+    "i": 105,
+    "q": "Which front-end development workflow tool allows a developer to style and develop a site based on static output of AEM webpages within the ui.frontend module?",
+    "options": [
+      "Client Library Generation",
+      "Storybook",
+      "Webpack Static Development Server",
+      "OSGi Services"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Webpack Static Development Server",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "workflow",
+      "clientlibs"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: Webpack Static Development Server.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Webpack Static Development Server.",
+    "snippet": "/* AEM \u00b7 osgi */\n// Which front-end development workflow tool allows a developer to style and develop a site based on static output of AEM webpages within the ui.frontend module?",
+    "changed": false
+  },
+  {
+    "i": 106,
+    "q": "A developer needs to create a new component called Component A. Component A must show a list of other components that all have a resource type of existing Component B. Component A must render this list of tiles for each Component B where the tile rendering is different from the default one. The list of rendered tiles must be reusable by future new components. How should the developer implement this functionality?",
+    "options": [
+      "Component A overlays Component B and overwrites the base renderer to facilitate the tiles",
+      "Component A calls the HTL of Component B directly using a data-sly-include attribute",
+      "Component A inherits from Component B and overwrites the base renderer to facilitate the tiles",
+      "Create a script for tile rendering in Component B and use data-sly-resource attribute with a Sling selector in Component A to render the tile"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Create a script for tile rendering in Component B and use data-sly-resource attribute with a Sling selector in Component A to render the tile",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Create a script for tile rendering in Component B and use data-sly-resource attribute with a Sling selector in Component A to render the tile.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Create a script for tile rendering in Component B and use data-sly-resource attribute with a Sling selector in Component A to render the til.",
+    "snippet": "/* AEM \u00b7 htl */\n// A developer needs to create a new component called Component A. Component A must show a list of other components that all have a resource type of existing Component B. Component A must render this list of tiles for each Component B where the tile rendering is ",
+    "changed": false
+  },
+  {
+    "i": 107,
+    "q": "A developer wants to change the log level for a custom API. Which OSGi configuration should the developer modify?",
+    "options": [
+      "Apache Sling Log Tracker Service",
+      "Apache Sling Logging Writer Configuration",
+      "Apache Sling Logging Configuration",
+      "Adobe Granite Log Analysis Service"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Apache Sling Logging Configuration",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "osgi"
+    ],
+    "difficulty": "medium",
+    "explanation": "OSGi configuration in AEM follows run-mode folders and PID files under /apps; the matching answer is: Apache Sling Logging Configuration.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Apache Sling Logging Configuration.",
+    "snippet": "/* AEM \u00b7 osgi */\n// A developer wants to change the log level for a custom API. Which OSGi configuration should the developer modify?",
+    "changed": false
+  },
+  {
+    "i": 108,
+    "q": "A developer needs to map a React image component to a corresponding AEM image component. What code should the developer use?",
+    "options": [
+      "RefTo('wknd-spa-react/components/image)(Image, ImageEditConfig);",
+      "MapTo('wknd-spa-react/components/image')(Image, ImageEditConfig):",
+      "MapTo(Image, ImageEditConfig)(wknd-spa-react/components/image);",
+      "RefTo(Image, ImageEditConfig)('wknd-spa-react/components/image);"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "MapTo('wknd-spa-react/components/image')(Image, ImageEditConfig):",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "spa"
+    ],
+    "difficulty": "medium",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: MapTo('wknd-spa-react/components/image')(Image, ImageEditConfig):.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: MapTo('wknd-spa-react/components/image')(Image, ImageEditConfig):.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// A developer needs to map a React image component to a corresponding AEM image component. What code should the developer use?",
+    "changed": false
+  },
+  {
+    "i": 109,
+    "q": "Which file is the default file to store the Dispatcher configuration?",
+    "options": [
+      "dispatcher.yaml",
+      "dispatcher.any",
+      "dispatcher.xml",
+      "dispatcher.config"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "dispatcher.any",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "dispatcher"
+    ],
+    "difficulty": "easy",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: dispatcher.any.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: dispatcher.any.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// Which file is the default file to store the Dispatcher configuration?",
+    "changed": false
+  },
+  {
+    "i": 110,
+    "q": "An instance of AEM has been upgraded to version 6.5. With that upgrade, which testing framework is being recommended as the testing framework for that version and beyond?",
+    "options": [
+      "Selenium automation",
+      "Bobcat.js",
+      "Mocha,js",
+      "React.js"
+    ],
+    "correct_letter": "d",
+    "correct_index": 0,
+    "correct_text": "React.js",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "testing",
+      "aem-6.5"
+    ],
+    "difficulty": "medium",
+    "explanation": "Post-Hobbes, AEM 6.5+ recommends standard automation such as Selenium. React.js is not a testing framework.",
+    "thought_process": "1) Recommended testing framework. 2) Selenium automation. 3) React.js is not testing. 4) Choose Selenium.",
+    "snippet": "/* AEM \u00b7 spa */\n// An instance of AEM has been upgraded to version 6.5. With that upgrade, which testing framework is being recommended as the testing framework for that version and beyond?",
+    "changed": true
+  },
+  {
+    "i": 111,
+    "q": "A custom AEM application contains Bundle A and Bundle B. Bundle A has a dependency to Bundle B via Import-Package. How can both bundles be deployed most efficiently across all environments?",
+    "options": [
+      "Use the Felix Web Console to upload the bundles in the correct order",
+      "Create one content package per bundle and use a package dependency to ensure installation order",
+      "Embed both bundles in one content package and use property 'installationOrder' in package properties for correct bundle installation order",
+      "Embed both bundles in one content package: the dependency via Import-Package is enough to ensure correct installation"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Embed both bundles in one content package: the dependency via Import-Package is enough to ensure correct installation",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "osgi",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Embed both bundles in one content package: the dependency via Import-Package is enough to ensure correct installation.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Embed both bundles in one content package: the dependency via Import-Package is enough to ensure correct installation.",
+    "snippet": "/* AEM \u00b7 osgi */\n// A custom AEM application contains Bundle A and Bundle B. Bundle A has a dependency to Bundle B via Import-Package. How can both bundles be deployed most efficiently across all environments?",
+    "changed": false
+  },
+  {
+    "i": 112,
+    "q": "A new AEM developer is trying to display a page heading and needs to know the proper syntax for accessing the property of a variable as there this method will be used to ultimately display several page elements. Which two code examples show the correct syntax for accessing a property of a variable in AEM? (Choose two.)",
+    "options": [
+      "${page['heading']}",
+      "${page.heading}",
+      "${page{'heading'}}",
+      "${page[heading]}"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "${page.heading}",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: ${page.heading}. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: ${page.heading}.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A new AEM developer is trying to display a page heading and needs to know the proper syntax for accessing the property of a variable as there this method will be used to ultimately display several page elements. Which two code examples show the correct syntax ",
+    "changed": false
+  },
+  {
+    "i": 113,
+    "q": "From which AEM Web Console should a developer access and download full AEM Log Files?",
+    "options": [
+      "Web Console -> System Information",
+      "AEM -> Log files",
+      "Status -> Log files",
+      "OSGI -> Sing Log Service"
+    ],
+    "correct_letter": "d",
+    "correct_index": 2,
+    "correct_text": "OSGI -> Sing Log Service",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "logging",
+      "web-console"
+    ],
+    "difficulty": "medium",
+    "explanation": "Download full logs from Web Console Status \u2192 Log files. Sling Log Service configures loggers; it is not the zip download UI.",
+    "thought_process": "1) Download full log files. 2) Status \u2192 Log files. 3) Reject Sing/Sling Log Service path. 4) Choose c.",
+    "snippet": "/* AEM \u00b7 osgi */\n// From which AEM Web Console should a developer access and download full AEM Log Files?",
+    "changed": true
+  },
+  {
+    "i": 114,
+    "q": "A developer is viewing this JSON code for a text component in AEM: { \"text\" : \"<p>Sample text</p>\" , \"richText\" : true , \"type\" : \"core/wcm/components/text/v2/text\" } Which property value is used to map a SPA component to an AEM component?",
+    "options": [
+      "richText",
+      ":spa",
+      ":type",
+      "Text"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": ":type",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "spa"
+    ],
+    "difficulty": "medium",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: :type.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: :type.",
+    "snippet": "/* AEM \u00b7 spa */\n// A developer is viewing this JSON code for a text component in AEM: { \"text\" : \"<p>Sample text</p>\" , \"richText\" : true , \"type\" : \"core/wcm/components/text/v2/text\" } Which property value is used to map a SPA component to an AEM component?",
+    "changed": false
+  },
+  {
+    "i": 115,
+    "q": "Which log file we must check for the response for each request together related to AEM instance?",
+    "options": [
+      "Stout log",
+      "Debug log",
+      "Request Log"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Request Log",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Request Log.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Request Log.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which log file we must check for the response for each request together related to AEM instance?",
+    "changed": false
+  },
+  {
+    "i": 116,
+    "q": "A developer has built a SPA in React and needs to get it ready for a migration to AEM. Which tasks does the developer need to perform to get the SPA ready for the migration? (Choose three.)",
+    "options": [
+      "Use the AEM SDK containers to place components on the screen",
+      "Create an AEM component for each JS component",
+      "Make their JS components modular",
+      "Agree on components and their JSON model",
+      "Implement each component's render() method"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Make their JS components modular",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "spa"
+    ],
+    "difficulty": "hard",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: Make their JS components modular.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Make their JS components modular.",
+    "snippet": "/* AEM \u00b7 spa */\n// A developer has built a SPA in React and needs to get it ready for a migration to AEM. Which tasks does the developer need to perform to get the SPA ready for the migration? (Choose three.)",
+    "changed": false
+  },
+  {
+    "i": 117,
+    "q": "The structure section of an editable template has a locked component. What happens to the content of that component when a developer unlocks it?",
+    "options": [
+      "The content is copied to the initial section of the editable template.",
+      "The content is deleted after confirmation from the template author.",
+      "The content is moved to the initial section of the editable template",
+      "The content stays in the same place but it ignored on pages using the template"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "The content is moved to the initial section of the editable template",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "editable-templates"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: The content is moved to the initial section of the editable template.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: The content is moved to the initial section of the editable template.",
+    "snippet": "/* AEM \u00b7 editable-templates */\n// The structure section of an editable template has a locked component. What happens to the content of that component when a developer unlocks it?",
+    "changed": false
+  },
+  {
+    "i": 118,
+    "q": "A developer creates Editable Templates based on a custom Page component. The developer wants to leverage the Style System within the Editable Templates to allow authors to switch between the Dark and Light Theme. The Style System dialog is NOT enabled for the site. What should the developer do to resolve this issue?",
+    "options": [
+      "Create two new client libraries with a dark and light theme and map them to the Page component.",
+      "Set the sling:resourceSuperType property to core/wcm/components/page/v2/page on the Page component.",
+      "Create a new dialog for the custom Page components",
+      "Define Style Definitions using Page Policy dialog on Editable Template"
+    ],
+    "correct_letter": "a",
+    "correct_index": 3,
+    "correct_text": "Create two new client libraries with a dark and light theme and map them to the Page component.",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "style-system",
+      "editable-templates",
+      "policies"
+    ],
+    "difficulty": "medium",
+    "explanation": "Enable Style System for authors by defining style definitions on the editable template page/component policy. Clientlibs alone do not enable the Style System dialog.",
+    "thought_process": "1) Style System dialog not enabled. 2) Define styles in policy. 3) Clientlibs \u2260 enable dialog. 4) Choose d.",
+    "snippet": "/* AEM \u00b7 clientlibs */\n// A developer creates Editable Templates based on a custom Page component. The developer wants to leverage the Style System within the Editable Templates to allow authors to switch between the Dark and Light Theme. The Style System dialog is NOT enabled for the ",
+    "changed": true
+  },
+  {
+    "i": 119,
+    "q": "Frontend developer working on an aem SPA is not able to see property that should be exposed in component added to page. Which option would give information if required property is exposed by sling model?",
+    "options": [
+      "[homepage-path]/sling.json",
+      "[homepage-path]/sling-model.json",
+      "[homepage-path]/model.json"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "[homepage-path]/model.json",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "spa"
+    ],
+    "difficulty": "medium",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: [homepage-path]/model.json.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: [homepage-path]/model.json.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// Frontend developer working on an aem SPA is not able to see property that should be exposed in component added to page. Which option would give information if required property is exposed by sling model?",
+    "changed": false
+  },
+  {
+    "i": 120,
+    "q": "An AEM administrator navigates to the Reports area in an AEM instance. The administrator wants to know how long it is taking people to reach the AEM or Dispatcher port and wants to be able to do so for both Author and Publish instances. In the System Monitoring area of AEM, which metric represents the response time to access the AEM or Dispatcher port?",
+    "options": [
+      "Port Bandwidth",
+      "Port Speed",
+      "Replication Agent",
+      "CQ Port Check"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "CQ Port Check",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "dispatcher",
+      "replication"
+    ],
+    "difficulty": "medium",
+    "explanation": "Dispatcher domain/routing is handled in Apache vhost (and related dispatcher) config. Correct: CQ Port Check.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: CQ Port Check.",
+    "snippet": "/* AEM \u00b7 dispatcher */\n// An AEM administrator navigates to the Reports area in an AEM instance. The administrator wants to know how long it is taking people to reach the AEM or Dispatcher port and wants to be able to do so for both Author and Publish instances. In the System Monitorin",
+    "changed": false
+  },
+  {
+    "i": 121,
+    "q": "Users have requested on an AEM-based website to have the ability to sign in to the site using their social media accounts. Which authentication handler must be enabled to accomplish this task?",
+    "options": [
+      "Adobe Granite SSO Authentication Handler",
+      "Adobe Granite OAuth Authentication Handler",
+      "AEM Communities Social OAuth Provider",
+      "AEM Platform Authentication Hander"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Adobe Granite OAuth Authentication Handler",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "security"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Adobe Granite OAuth Authentication Handler.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Adobe Granite OAuth Authentication Handler.",
+    "snippet": "/* AEM \u00b7 security */\n// Users have requested on an AEM-based website to have the ability to sign in to the site using their social media accounts. Which authentication handler must be enabled to accomplish this task?",
+    "changed": false
+  },
+  {
+    "i": 122,
+    "q": "A business wants to save time when doing an in-place upgrade of an AEM instance. To meet this requirement, when should Oak indexes be reindexed in relation to the upgrade itself?",
+    "options": [
+      "Before",
+      "During",
+      "After",
+      "The indexes should be rebuilt instead of upgraded"
+    ],
+    "correct_letter": "a",
+    "correct_index": 2,
+    "correct_text": "Before",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "upgrade",
+      "oak",
+      "indexing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Reindex Oak indexes after in-place upgrade so new definitions apply once; reindexing before can waste time.",
+    "thought_process": "1) Save time around upgrade. 2) Reindex after. 3) Before risks double work. 4) Choose After.",
+    "snippet": "/* AEM \u00b7 oak */\n// A business wants to save time when doing an in-place upgrade of an AEM instance. To meet this requirement, when should Oak indexes be reindexed in relation to the upgrade itself?",
+    "changed": true
+  },
+  {
+    "i": 123,
+    "q": "An AEM developer wants to build a Generic Snippet to create a new service. Which word goes in the missing parts of the code block to complete this action? ( function () { var ga = document . createElement ( \"_____\" ); ga . type = 'text/javascript' ; ga . async = true ; ga . src = ( 'https:' == document . location . protocol ? 'https://ssl' : 'https://www' ) + '.google-analytics.com/ga.s' ; var s = document . getElementsByTagName ( '____' )[ 0 ]; s . parentNode . insertBefore ( ga , s ); })();",
+    "options": [
+      "head",
+      "meta",
+      "element",
+      "script"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "script",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: script.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: script.",
+    "snippet": "/* AEM \u00b7 concepts */\n// An AEM developer wants to build a Generic Snippet to create a new service. Which word goes in the missing parts of the code block to complete this action? ( function () { var ga = document . createElement ( \"_____\" ); ga . type = 'text/javascript' ; ga . async",
+    "changed": false
+  },
+  {
+    "i": 124,
+    "q": "An AEM developer is attempting to configure the component edit bar and wants to add a button to edit a component and allow annotations to the component. The developer does not have a custom button built for this purpose and wants one button to do both the editing and the annotating of the component and its contents. Indicate the correct word or phrase for the missing code piece to complete this task. <jcr:root xmins:cq = \"https://www.day.com/jcr/cq/1.0\" xmins:jcr = \"https://www.jcp.org/jcr/1.0\" cq:actions = \"[ insert,delete]\" cq:layout = \"editbar\" jcr:primaryType = \"cq:EditConfig\" />",
+    "options": [
+      "edit",
+      "editannoate",
+      "annotate",
+      "edit, annotate"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "editannoate",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: editannoate.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: editannoate.",
+    "snippet": "/* AEM \u00b7 concepts */\n// An AEM developer is attempting to configure the component edit bar and wants to add a button to edit a component and allow annotations to the component. The developer does not have a custom button built for this purpose and wants one button to do both the edit",
+    "changed": false
+  },
+  {
+    "i": 125,
+    "q": "When using a hybrid implementation, which format does the Sling Model Exporter support for rendering Experience Manager content, using custom business logic?",
+    "options": [
+      "HTL",
+      "JSP",
+      "JSON",
+      "HTML"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "JSON",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "sling-models",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: JSON.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: JSON.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// When using a hybrid implementation, which format does the Sling Model Exporter support for rendering Experience Manager content, using custom business logic?",
+    "changed": false
+  },
+  {
+    "i": 126,
+    "q": "A folder was created as a configuration folder for the authoring environment within an instance of AEM. How should this folder be named?",
+    "options": [
+      "config.authoring",
+      "config",
+      "config.author",
+      "author.config"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "config.author",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: config.author.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: config.author.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A folder was created as a configuration folder for the authoring environment within an instance of AEM. How should this folder be named?",
+    "changed": false
+  },
+  {
+    "i": 127,
+    "q": "Which log file contains AEM application request and response entries?",
+    "options": [
+      "response.log",
+      "history.log",
+      "request.log",
+      "audit.log"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "request.log",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: request.log.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: request.log.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Which log file contains AEM application request and response entries?",
+    "changed": false
+  },
+  {
+    "i": 128,
+    "q": "A team developing components and templates for multiple authoring groups wants to make sure authors from one brand do not see components and template from a different brand. Which two sets of properties should be utilized for ensuring authors only see templates in their respective brands? (Choose two.)",
+    "options": [
+      "allowedPaths",
+      "componentGroup",
+      "vanityURL",
+      "templateGroup"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "componentGroup",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: componentGroup. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: componentGroup.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A team developing components and templates for multiple authoring groups wants to make sure authors from one brand do not see components and template from a different brand. Which two sets of properties should be utilized for ensuring authors only see template",
+    "changed": false
+  },
+  {
+    "i": 129,
+    "q": "Two development teams are using versions 2.0 and 2.1 of a project library, the latter being a recent upgrade to 2.1. One of the development teams notices the project is now not functioning. What is the best solution for this problem?",
+    "options": [
+      "Make the APIs match in each version of a project",
+      "Break the dependencies between the two projects",
+      "Make the projects children of one parent project",
+      "Declare dependencies across projects"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Make the projects children of one parent project",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Make the projects children of one parent project.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Make the projects children of one parent project.",
+    "snippet": "/* AEM \u00b7 concepts */\n// Two development teams are using versions 2.0 and 2.1 of a project library, the latter being a recent upgrade to 2.1. One of the development teams notices the project is now not functioning. What is the best solution for this problem?",
+    "changed": false
+  },
+  {
+    "i": 130,
+    "q": "An AEM Developer is creating a custom component and wants to sort a list of images within the component. The developer also wants to sort list of values later using the same keyword. Which missing word will finish the code block necessary to perform this task? The same word goes in both empty slots. public class ImageList implements Image { @ValueMapValue private List < String > images ; @Override public List < String > getlmages () { if ( images != null ) { ______ . sort ( images ); return new ArrayList < String > ( images ); } else { return _______ . emptyList (); } } }",
+    "options": [
+      "ArrayList",
+      "Array",
+      "Collections",
+      "Sort"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Collections",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Collections.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Collections.",
+    "snippet": "/* AEM \u00b7 concepts */\n// An AEM Developer is creating a custom component and wants to sort a list of images within the component. The developer also wants to sort list of values later using the same keyword. Which missing word will finish the code block necessary to perform this task?",
+    "changed": false
+  },
+  {
+    "i": 131,
+    "q": "Which two approaches for deploying AEM create an active-active cluster for the AEM author environment? (Choose two.)",
+    "options": [
+      "Oak Cluster with MongoMkK Failover for High Availability in a Single Datacenter",
+      "TarMK Farm",
+      "TarMK Cold Standby",
+      "Oak Cluster with MongoMK Failover Across Multiple Datacenters"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Oak Cluster with MongoMK Failover Across Multiple Datacenters",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "oak"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Oak Cluster with MongoMK Failover Across Multiple Datacenters. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Oak Cluster with MongoMK Failover Across Multiple Datacenters.",
+    "snippet": "/* AEM \u00b7 oak */\n// Which two approaches for deploying AEM create an active-active cluster for the AEM author environment? (Choose two.)",
+    "changed": false
+  },
+  {
+    "i": 132,
+    "q": "An AEM developer wants to display a title using HTL if the title exists. The developer may want to add code later to display an element if here are no child pages or base an element display on the existence of a property. The developer needs to know what the missing element is in this code, which can be used to satisfy any of the aforementioned conditions, this one to display a title using HTL if the title exists: <h1 ___________ = \"${properties.jcr:title}\" > ${properties.jcr:title} </h1>",
+    "options": [
+      "data-sly",
+      "if-exists",
+      "data-sly-test",
+      "if-present"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "data-sly-test",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "htl"
+    ],
+    "difficulty": "medium",
+    "explanation": "HTL (Sightly) uses data-sly-* block statements and expression language; the correct syntax/option is: data-sly-test.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: data-sly-test.",
+    "snippet": "/* AEM \u00b7 htl */\n// An AEM developer wants to display a title using HTL if the title exists. The developer may want to add code later to display an element if here are no child pages or base an element display on the existence of a property. The developer needs to know what the m",
+    "changed": false
+  },
+  {
+    "i": 133,
+    "q": "An AEM developer in the process of creating a custom component. The Developer needs to know which interface to implement for the Sling Model to automatically be recognized by the JSON model API. Indicate which interface is needed in the missing code to complete this code. public interface CustomComponent extends { public String getMessage (); }",
+    "options": [
+      "ExporterType",
+      "Exporter",
+      "ComponentControl",
+      "ComponentExporter"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "ComponentExporter",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "sling-models"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: ComponentExporter.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: ComponentExporter.",
+    "snippet": "/* AEM \u00b7 sling-models */\n// An AEM developer in the process of creating a custom component. The Developer needs to know which interface to implement for the Sling Model to automatically be recognized by the JSON model API. Indicate which interface is needed in the missing code to complet",
+    "changed": false
+  },
+  {
+    "i": 134,
+    "q": "An AEM developer is in the process of creating a custom component to display information on images within an app called snow, specifically name, size, and date taken. A folder has been created in the ui.apps module under /apps/snow/components. The folder is named custom-component. Which file needs to be created to hold the component definition?",
+    "options": [
+      ".content.xml",
+      ".images.xml",
+      ".snow.xml",
+      ".definition.xml"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": ".content.xml",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "archetype"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: .content.xml.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: .content.xml.",
+    "snippet": "/* AEM \u00b7 archetype */\n// An AEM developer is in the process of creating a custom component to display information on images within an app called snow, specifically name, size, and date taken. A folder has been created in the ui.apps module under /apps/snow/components. The folder is na",
+    "changed": false
+  },
+  {
+    "i": 135,
+    "q": "An AEM developer wants to allow non-developers to work with pipelines within AEM as a Cloud Service. The developer wants to use an existing environment type and the environment can only involve non-production pipelines. Which AEM Environment type is associated strictly with non-production pipelines within AEM as a Cloud Service?",
+    "options": [
+      "Development",
+      "Stage",
+      "Production",
+      "Testing"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Development",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "cloud-service",
+      "testing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Development.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Development.",
+    "snippet": "/* AEM \u00b7 cloud-service */\n// An AEM developer wants to allow non-developers to work with pipelines within AEM as a Cloud Service. The developer wants to use an existing environment type and the environment can only involve non-production pipelines. Which AEM Environment type is associated",
+    "changed": false
+  },
+  {
+    "i": 136,
+    "q": "An AEM developer wants to create a Content Fragment Model. The option to do so is not available. The developer wants to make sure the model stays local to the project. What does the developer need to do to have the option to create a Content Fragment model?",
+    "options": [
+      "Define the structure of a Content Fragment Model",
+      "Add an instance of the ContentFragmentModels class",
+      "Enable Content Fragment Models through the Configuration Browser",
+      "Extend the ContentFragmentModels class"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "Enable Content Fragment Models through the Configuration Browser",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem",
+      "content-fragments",
+      "editable-templates"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Enable Content Fragment Models through the Configuration Browser.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Enable Content Fragment Models through the Configuration Browser.",
+    "snippet": "/* AEM \u00b7 content-fragments */\n// An AEM developer wants to create a Content Fragment Model. The option to do so is not available. The developer wants to make sure the model stays local to the project. What does the developer need to do to have the option to create a Content Fragment model?",
+    "changed": false
+  },
+  {
+    "i": 137,
+    "q": "An AEM Developer has created a custom component and wants to start using it on a page within a local AEM instance. The developer currently has no means by which to add the component to the page or any other page within the instance. What does the developer need to run to deploy the code to the instance?",
+    "options": [
+      "$mvn update install -PautolnstallSinglePackage",
+      "$mvn clean install -PautolnstallSinglePackage",
+      "$mvn install -PautolnstallSinglePackage",
+      "$mvn update -PautolnstallSinglePackage"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "$mvn clean install -PautolnstallSinglePackage",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: $mvn clean install -PautolnstallSinglePackage.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: $mvn clean install -PautolnstallSinglePackage.",
+    "snippet": "/* AEM \u00b7 packages */\n// An AEM Developer has created a custom component and wants to start using it on a page within a local AEM instance. The developer currently has no means by which to add the component to the page or any other page within the instance. What does the developer nee",
+    "changed": false
+  },
+  {
+    "i": 138,
+    "q": "A new AEM developer wants to create a workflow model programmatically. The developer wants to create a folder called workflowdrafts in the correct folder within AEM. What does the complete path to the model look like?",
+    "options": [
+      "/var/packages/workflow/models/workflowdrafts",
+      "/var/workflow/workflowdrafts",
+      "/var/models/workflowdrafts",
+      "/var/workflow/models/workflowdrafts"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "/var/workflow/models/workflowdrafts",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "workflow",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: /var/workflow/models/workflowdrafts.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: /var/workflow/models/workflowdrafts.",
+    "snippet": "/* AEM \u00b7 workflow */\n// A new AEM developer wants to create a workflow model programmatically. The developer wants to create a folder called workflowdrafts in the correct folder within AEM. What does the complete path to the model look like?",
+    "changed": false
+  },
+  {
+    "i": 139,
+    "q": "An AEM developer wants to load CSS files of a client library into a webpage. The developer has completed most of the code but does not know what to put in the missing space. Which code should fill the missing space in this code example? <head> <!-- HTML meta-data --> <sly _______ = \"${clientlib.css @ categories='myCategory'}\" /> </head>",
+    "options": [
+      "data-sly-call",
+      "data-sly",
+      "data-sly-get",
+      "data-sly-use"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "data-sly-call",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "htl",
+      "clientlibs"
+    ],
+    "difficulty": "medium",
+    "explanation": "AEM SPA Editor wiring uses MapTo / Page Model JSON. Correct choice: data-sly-call.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: data-sly-call.",
+    "snippet": "/* AEM \u00b7 htl */\n// An AEM developer wants to load CSS files of a client library into a webpage. The developer has completed most of the code but does not know what to put in the missing space. Which code should fill the missing space in this code example? <head> <!-- HTML meta-d",
+    "changed": false
+  },
+  {
+    "i": 140,
+    "q": "An app needs a workflow to trigger another workflow. Which type of workflow step, when run, starts another workflow model?",
+    "options": [
+      "Join",
+      "Process",
+      "Split",
+      "Container"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Container",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "workflow"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: Container.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Container.",
+    "snippet": "/* AEM \u00b7 workflow */\n// An app needs a workflow to trigger another workflow. Which type of workflow step, when run, starts another workflow model?",
+    "changed": false
+  },
+  {
+    "i": 141,
+    "q": "An instance of AEM is running CRX2 and will require a migration to Oak (CRX3) when upgrading directly to AEM 6.5. Which version of AEM is running?",
+    "options": [
+      "5.6",
+      "6.2",
+      "6.0",
+      "6.1"
+    ],
+    "correct_letter": "c",
+    "correct_index": 0,
+    "correct_text": "6.0",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "upgrade",
+      "oak",
+      "crx2"
+    ],
+    "difficulty": "medium",
+    "explanation": "CRX2 belongs to AEM 5.6.x. AEM 6.0+ is Oak, so a CRX2 instance upgrading directly to 6.5 is 5.6.",
+    "thought_process": "1) Still on CRX2. 2) CRX2 = 5.6. 3) 6.x already Oak. 4) Choose 5.6.",
+    "snippet": "/* AEM \u00b7 oak */\n// An instance of AEM is running CRX2 and will require a migration to Oak (CRX3) when upgrading directly to AEM 6.5. Which version of AEM is running?",
+    "changed": true
+  },
+  {
+    "i": 142,
+    "q": "What needs to be run to produce the clientlib-site and clientlib-dependencies client libraries into the ui.apps back-end module?",
+    "options": [
+      "npm run dev",
+      "mvn run dev",
+      "mvn clean install -PautolnstallPackage",
+      "npm clean install - PautolnstallPackage"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "npm run dev",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "clientlibs",
+      "archetype",
+      "packages"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: npm run dev.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: npm run dev.",
+    "snippet": "/* AEM \u00b7 clientlibs */\n// What needs to be run to produce the clientlib-site and clientlib-dependencies client libraries into the ui.apps back-end module?",
+    "changed": false
+  },
+  {
+    "i": 143,
+    "q": "Within the AEM Project Archetype, developer is looking for add browser plug-ins within the main folder of the project. The developer also wants to add Ul-based plugins and knows there is a file with plugin sections to where plugin configurations can be defined. Which file is that?",
+    "options": [
+      "Parent POM",
+      "plugins.xml",
+      "ui.apps/pom.xml",
+      "filter.xml"
+    ],
+    "correct_letter": "a",
+    "correct_index": 0,
+    "correct_text": "Parent POM",
+    "fixed_index": 0,
+    "topic_tags": [
+      "aem",
+      "archetype",
+      "packages"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Parent POM.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Parent POM.",
+    "snippet": "/* AEM \u00b7 archetype */\n// Within the AEM Project Archetype, developer is looking for add browser plug-ins within the main folder of the project. The developer also wants to add Ul-based plugins and knows there is a file with plugin sections to where plugin configurations can be defined",
+    "changed": false
+  },
+  {
+    "i": 144,
+    "q": "A new developer changes a workflow after it has been run for the first time. However, upon testing the workflow, the changes are not reflected when the workflow runs. What is the most likely cause of this problem?",
+    "options": [
+      "The workflow needs to be debugged first",
+      "A new version of the runtime version was not saved",
+      "The runtime version of the workflow was not updated",
+      "The Sync was not triggered in the workflow model"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "The Sync was not triggered in the workflow model",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "workflow",
+      "testing"
+    ],
+    "difficulty": "medium",
+    "explanation": "Workflow APIs expose args via MetaDataMap / process arguments. Correct: The Sync was not triggered in the workflow model.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: The Sync was not triggered in the workflow model.",
+    "snippet": "/* AEM \u00b7 workflow */\n// A new developer changes a workflow after it has been run for the first time. However, upon testing the workflow, the changes are not reflected when the workflow runs. What is the most likely cause of this problem?",
+    "changed": false
+  },
+  {
+    "i": 145,
+    "q": "For a default installation of AEM, on which port does the Author instance run?",
+    "options": [
+      "8080",
+      "4503",
+      "4502",
+      "80"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "4502",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "easy",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: 4502.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: 4502.",
+    "snippet": "/* AEM \u00b7 concepts */\n// For a default installation of AEM, on which port does the Author instance run?",
+    "changed": false
+  },
+  {
+    "i": 146,
+    "q": "A developer wants to use the AEM Project Archetype as the developer as the developer is working on a minimal, best-practice based AEM project. The archetype is based off which type of template?",
+    "options": [
+      "Gradle",
+      "React.js",
+      "Angular.js",
+      "Maven"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Maven",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem",
+      "spa",
+      "archetype"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Maven.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Maven.",
+    "snippet": "/* AEM \u00b7 spa */\n// A developer wants to use the AEM Project Archetype as the developer as the developer is working on a minimal, best-practice based AEM project. The archetype is based off which type of template?",
+    "changed": false
+  },
+  {
+    "i": 147,
+    "q": "A new AEM administrator needs to learn the URL for the Configuration tab of the Web Console for an AEM instance on a local server. Which path should the administrator use to get to the console?",
+    "options": [
+      "//localhost:4502/webConsole/configMgr",
+      "//localhost:4502/console/configMgr",
+      "//localhost:4502/system/console/configMgr",
+      "//localhost:4502/system/webConsole/configMgr"
+    ],
+    "correct_letter": "c",
+    "correct_index": 2,
+    "correct_text": "//localhost:4502/system/console/configMgr",
+    "fixed_index": 2,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: //localhost:4502/system/console/configMgr.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: //localhost:4502/system/console/configMgr.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A new AEM administrator needs to learn the URL for the Configuration tab of the Web Console for an AEM instance on a local server. Which path should the administrator use to get to the console?",
+    "changed": false
+  },
+  {
+    "i": 148,
+    "q": "A developer is in the Environments area of an AEM instance and can access the Developer Console for all versions of the instance. A user wants to run some tests within a Developer Console. The company has a strict policy against allowing non-developers to be in the Developer Console within a production, stage, or development environment. What should be set up to allow the user to use the Developer Console?",
+    "options": [
+      "Make the user an administrator",
+      "Ensure the user has access to the Cloud Manager Sandbox Program",
+      "Set up a new test AEM environment",
+      "Set up a test sandbox instance"
+    ],
+    "correct_letter": "b",
+    "correct_index": 1,
+    "correct_text": "Ensure the user has access to the Cloud Manager Sandbox Program",
+    "fixed_index": 1,
+    "topic_tags": [
+      "aem",
+      "cloud-service"
+    ],
+    "difficulty": "medium",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Ensure the user has access to the Cloud Manager Sandbox Program.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Ensure the user has access to the Cloud Manager Sandbox Program.",
+    "snippet": "/* AEM \u00b7 cloud-service */\n// A developer is in the Environments area of an AEM instance and can access the Developer Console for all versions of the instance. A user wants to run some tests within a Developer Console. The company has a strict policy against allowing non-developers to be i",
+    "changed": false
+  },
+  {
+    "i": 149,
+    "q": "A developer wants to add a list of IP addresses to be allowed in the Author version of an app. The developer navigates to the Environments screen but does not have access to the IP Allow Lists area. The same problem exists when the developer navigates to the Publish version of the app. Which roles are eligible to add an IP Allow list? (Choose two)",
+    "options": [
+      "List Manager",
+      "Site Administrator",
+      "Deployment Manager",
+      "Business Owner"
+    ],
+    "correct_letter": "d",
+    "correct_index": 3,
+    "correct_text": "Business Owner",
+    "fixed_index": 3,
+    "topic_tags": [
+      "aem"
+    ],
+    "difficulty": "hard",
+    "explanation": "Based on AEM platform behavior and Adobe Experience League guidance, the correct option is: Business Owner. The source item was multi-select; this practice card highlights the key required selection and reasoning.",
+    "thought_process": "1) Map the stem to the AEM feature area. 2) Drop options that name the wrong console, content type, or API. 3) Keep the option that matches Adobe-recommended practice: Business Owner.",
+    "snippet": "/* AEM \u00b7 concepts */\n// A developer wants to add a list of IP addresses to be allowed in the Author version of an app. The developer navigates to the Environments screen but does not have access to the IP Allow Lists area. The same problem exists when the developer navigates to the P",
+    "changed": false
+  }
+]

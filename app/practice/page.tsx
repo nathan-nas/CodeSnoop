@@ -16,7 +16,7 @@ export default async function PracticePage() {
   const languages: Language[] =
     profile.preferred_languages?.length > 0
       ? profile.preferred_languages
-      : ["javascript", "java"];
+      : ["javascript", "java", "aem"];
 
   const preferredTopics = profile.preferred_topics?.filter(Boolean) ?? [];
 

@@ -7,6 +7,7 @@ import type { Language } from "@/lib/types/database";
 const OPTIONS: { id: Language; label: string; hint: string }[] = [
   { id: "javascript", label: "JavaScript", hint: "async, closures, nullish quirks" },
   { id: "java", label: "Java", hint: "streams, equality, concurrency traps" },
+  { id: "aem", label: "AEM", hint: "Sling, OSGi, HTL, Dispatcher, Oak" },
 ];
 
 export function OnboardingForm({

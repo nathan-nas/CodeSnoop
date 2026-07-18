@@ -41,11 +41,13 @@ export async function GET(request: Request) {
     .single();
 
   const languages: Language[] =
-    languageParam === "java" || languageParam === "javascript"
+    languageParam === "java" ||
+    languageParam === "javascript" ||
+    languageParam === "aem"
       ? [languageParam]
       : ((profile?.preferred_languages as Language[] | null)?.length
           ? (profile!.preferred_languages as Language[])
-          : ["javascript", "java"]);
+          : ["javascript", "java", "aem"]);
 
   const preferredTopics =
     (profile?.preferred_topics as string[] | null)?.filter(Boolean) ?? [];

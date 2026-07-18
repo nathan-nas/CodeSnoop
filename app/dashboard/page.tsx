@@ -154,7 +154,12 @@ function AreaList({
               className="flex justify-between text-sm"
             >
               <span>
-                {item.language === "javascript" ? "JS" : "Java"} · {item.topic}
+                {item.language === "javascript"
+                  ? "JS"
+                  : item.language === "aem"
+                    ? "AEM"
+                    : "Java"}{" "}
+                · {item.topic}
               </span>
               <span className="text-[var(--ink-muted)]">
                 {Math.round(item.accuracy * 100)}%

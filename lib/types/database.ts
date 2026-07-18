@@ -1,4 +1,4 @@
-export type Language = "java" | "javascript";
+export type Language = "java" | "javascript" | "aem";
 export type Difficulty = "easy" | "medium" | "hard";
 export type QuestionStatus = "draft" | "published" | "rejected";
 export type UserRole = "user" | "admin";

@@ -16,6 +16,11 @@ const LANG_OPTIONS: { id: Language; label: string; hint: string }[] = [
     label: "Java",
     hint: "streams, equality, concurrency traps",
   },
+  {
+    id: "aem",
+    label: "AEM",
+    hint: "Sling, OSGi, HTL, Dispatcher, Oak",
+  },
 ];
 
 export function ProfileForm({ profile }: { profile: Profile }) {

@@ -13,6 +13,46 @@ type AnswerResult = {
   thought_process: string;
 };
 
+function QuestionLoading() {
+  return (
+    <div
+      className="space-y-6"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="flex items-center gap-3 text-sm text-[var(--ink-muted)]">
+        <span className="practice-spinner" aria-hidden />
+        <span>Loading next question…</span>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <div className="practice-skel h-5 w-16" />
+        <div className="practice-skel h-5 w-14" />
+        <div className="practice-skel h-5 w-20" />
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-[var(--code-border)] bg-[var(--code-bg)] p-5">
+        <div className="space-y-3">
+          <div className="practice-skel h-3 w-[92%]" />
+          <div className="practice-skel h-3 w-[78%]" />
+          <div className="practice-skel h-3 w-[85%]" />
+          <div className="practice-skel h-3 w-[60%]" />
+          <div className="practice-skel h-3 w-[70%]" />
+        </div>
+      </div>
+
+      <div className="space-y-3">
+        <div className="practice-skel h-7 w-[70%]" />
+        <div className="practice-skel h-12 w-full" />
+        <div className="practice-skel h-12 w-full" />
+        <div className="practice-skel h-12 w-full" />
+        <div className="practice-skel h-12 w-full" />
+      </div>
+    </div>
+  );
+}
+
 export function PracticeSession({
   initialQuestion,
   initialHtml,
@@ -24,43 +64,52 @@ export function PracticeSession({
   const [html, setHtml] = useState(initialHtml);
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<AnswerResult | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [loadingNext, setLoadingNext] = useState(!initialQuestion);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
 
   const loadNext = useCallback(async (topic?: string) => {
-    setLoading(true);
+    setLoadingNext(true);
     setError(null);
     setResult(null);
     setSelected(null);
+    setQuestion(null);
+    setHtml("");
 
-    const params = new URLSearchParams();
-    if (topic) params.set("topic", topic);
-    const res = await fetch(`/api/questions/next?${params.toString()}`);
-    if (!res.ok) {
-      const body = await res.json().catch(() => ({}));
-      setError(body.error ?? "No questions available.");
+    try {
+      const params = new URLSearchParams();
+      if (topic) params.set("topic", topic);
+      const res = await fetch(`/api/questions/next?${params.toString()}`);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError(body.error ?? "No questions available.");
+        setQuestion(null);
+        return;
+      }
+
+      const body = await res.json();
+      const q = body.question as PublicQuestion;
+
+      const htmlRes = await fetch("/api/highlight", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: q.snippet_code,
+          language: q.snippet_language || q.language,
+        }),
+      });
+      const htmlBody = await htmlRes.json();
+
+      setQuestion(q);
+      setHtml(htmlBody.html ?? "");
+      setStartedAt(Date.now());
+    } catch {
+      setError("Could not load the next question.");
       setQuestion(null);
-      setLoading(false);
-      return;
+    } finally {
+      setLoadingNext(false);
     }
-
-    const body = await res.json();
-    const q = body.question as PublicQuestion;
-    setQuestion(q);
-
-    const htmlRes = await fetch("/api/highlight", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        code: q.snippet_code,
-        language: q.snippet_language || q.language,
-      }),
-    });
-    const htmlBody = await htmlRes.json();
-    setHtml(htmlBody.html ?? "");
-    setStartedAt(Date.now());
-    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -71,7 +120,7 @@ export function PracticeSession({
 
   async function submit() {
     if (!question || selected === null) return;
-    setLoading(true);
+    setSubmitting(true);
     setError(null);
 
     const res = await fetch("/api/questions/answer", {
@@ -87,15 +136,19 @@ export function PracticeSession({
     const body = await res.json();
     if (!res.ok) {
       setError(body.error ?? "Could not submit answer.");
-      setLoading(false);
+      setSubmitting(false);
       return;
     }
 
     setResult(body);
-    setLoading(false);
+    setSubmitting(false);
   }
 
-  if (!question && !loading) {
+  if (loadingNext) {
+    return <QuestionLoading />;
+  }
+
+  if (!question) {
     return (
       <div className="rounded-xl border border-[var(--line)] bg-[var(--surface)] p-8 text-center">
         <p className="text-[var(--ink-muted)]">
@@ -108,12 +161,6 @@ export function PracticeSession({
           Back to dashboard
         </Link>
       </div>
-    );
-  }
-
-  if (!question) {
-    return (
-      <p className="text-[var(--ink-muted)]">Loading next question…</p>
     );
   }
 
@@ -166,7 +213,7 @@ export function PracticeSession({
               <button
                 key={idx}
                 type="button"
-                disabled={!!result || loading}
+                disabled={!!result || submitting}
                 onClick={() => setSelected(idx)}
                 className={classes}
               >
@@ -185,11 +232,11 @@ export function PracticeSession({
       {!result ? (
         <button
           type="button"
-          disabled={selected === null || loading}
+          disabled={selected === null || submitting}
           onClick={submit}
           className="rounded-md bg-[var(--accent)] px-5 py-3 text-sm font-semibold text-white hover:bg-[var(--accent-strong)] disabled:opacity-50"
         >
-          {loading ? "Submitting…" : "Submit answer"}
+          {submitting ? "Submitting…" : "Submit answer"}
         </button>
       ) : (
         <div className="space-y-5 rounded-xl border border-[var(--line)] bg-[var(--surface)] p-6">
@@ -219,14 +266,14 @@ export function PracticeSession({
           <div className="flex flex-wrap gap-3 pt-2">
             <button
               type="button"
-              onClick={() => loadNext()}
+              onClick={() => void loadNext()}
               className="rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--accent-strong)]"
             >
               Next question
             </button>
             <button
               type="button"
-              onClick={() => loadNext(question.topic_tags?.[0])}
+              onClick={() => void loadNext(question.topic_tags?.[0])}
               className="rounded-md border border-[var(--line)] px-4 py-2 text-sm font-semibold"
             >
               More like this

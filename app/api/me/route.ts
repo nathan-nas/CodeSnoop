@@ -46,7 +46,8 @@ export async function PATCH(request: Request) {
 
   if (Array.isArray(body.preferred_languages)) {
     const langs = body.preferred_languages.filter(
-      (l: unknown): l is Language => l === "java" || l === "javascript",
+      (l: unknown): l is Language =>
+        l === "java" || l === "javascript" || l === "aem",
     );
     updates.preferred_languages = langs;
   }
