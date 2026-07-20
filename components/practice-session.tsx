@@ -1,9 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicQuestion } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
+
+type PrefetchedQuestion = { question: PublicQuestion; html: string };
+
+// Holds a prefetch in-flight. `resolved` is set once the promise settles.
+type PrefetchHandle = {
+  promise: Promise<PrefetchedQuestion | null>;
+  resolved?: PrefetchedQuestion | null;
+};
+
+async function fetchNextQuestion(
+  topic?: string,
+): Promise<PrefetchedQuestion | null> {
+  try {
+    const params = new URLSearchParams();
+    if (topic) params.set("topic", topic);
+    const res = await fetch(`/api/questions/next?${params.toString()}`);
+    if (!res.ok) return null;
+    const body = await res.json();
+    const q = body.question as PublicQuestion;
+    const htmlRes = await fetch("/api/highlight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: q.snippet_code,
+        language: q.snippet_language || q.language,
+      }),
+    });
+    const htmlBody = await htmlRes.json();
+    return { question: q, html: htmlBody.html ?? "" };
+  } catch {
+    return null;
+  }
+}
+
+function startPrefetch(): PrefetchHandle {
+  const handle = {} as PrefetchHandle;
+  handle.promise = fetchNextQuestion().then((result) => {
+    handle.resolved = result;
+    return result;
+  });
+  return handle;
+}
 
 type AnswerResult = {
   is_correct: boolean;
@@ -69,40 +111,48 @@ export function PracticeSession({
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
 
+  // Prefetch the next question while the user reads the explanation.
+  const prefetchRef = useRef<PrefetchHandle | null>(null);
+
   const loadNext = useCallback(async (topic?: string) => {
-    setLoadingNext(true);
     setError(null);
     setResult(null);
     setSelected(null);
+
+    // Consume any prefetch (only applies when no topic filter is requested).
+    const prefetch = !topic ? prefetchRef.current : null;
+    prefetchRef.current = null;
+
+    if (prefetch && prefetch.resolved !== undefined) {
+      // Prefetch already settled — apply synchronously, no skeleton at all.
+      if (prefetch.resolved) {
+        setQuestion(prefetch.resolved.question);
+        setHtml(prefetch.resolved.html);
+        setStartedAt(Date.now());
+      } else {
+        setError("No questions available.");
+        setQuestion(null);
+      }
+      return;
+    }
+
+    // Prefetch still in-flight or no prefetch — show skeleton while waiting.
+    setLoadingNext(true);
     setQuestion(null);
     setHtml("");
 
     try {
-      const params = new URLSearchParams();
-      if (topic) params.set("topic", topic);
-      const res = await fetch(`/api/questions/next?${params.toString()}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        setError(body.error ?? "No questions available.");
+      const fetched = prefetch
+        ? await prefetch.promise
+        : await fetchNextQuestion(topic);
+
+      if (!fetched) {
+        setError("No questions available.");
         setQuestion(null);
         return;
       }
-
-      const body = await res.json();
-      const q = body.question as PublicQuestion;
-
-      const htmlRes = await fetch("/api/highlight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: q.snippet_code,
-          language: q.snippet_language || q.language,
-        }),
-      });
-      const htmlBody = await htmlRes.json();
-
-      setQuestion(q);
-      setHtml(htmlBody.html ?? "");
+      setQuestion(fetched.question);
+      setHtml(fetched.html);
       setStartedAt(Date.now());
     } catch {
       setError("Could not load the next question.");
@@ -142,6 +192,8 @@ export function PracticeSession({
 
     setResult(body);
     setSubmitting(false);
+    // Kick off the next question in the background so "Next question" is instant.
+    prefetchRef.current = startPrefetch();
   }
 
   if (loadingNext) {
