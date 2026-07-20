@@ -1,32 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import type { Language, PublicQuestion, Question } from "@/lib/types/database";
-
-function toPublic(q: Question): PublicQuestion {
-  const {
-    correct_option_index: _c,
-    explanation: _e,
-    thought_process: _t,
-    ...publicQuestion
-  } = q;
-  return publicQuestion;
-}
-
-function pickNext(
-  pool: Question[],
-  answeredIds: Set<string>,
-  excludeId?: string | null,
-): Question | null {
-  const candidates = excludeId
-    ? pool.filter((q) => q.id !== excludeId)
-    : pool;
-
-  return (
-    candidates.find((q) => !answeredIds.has(q.id)) ??
-    candidates[Math.floor(Math.random() * candidates.length)] ??
-    null
-  );
-}
+import { resolveNextQuestion } from "@/lib/questions/next-question";
+import type { Language } from "@/lib/types/database";
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -42,6 +17,7 @@ export async function GET(request: Request) {
   const topic = searchParams.get("topic");
   const languageParam = searchParams.get("language");
   const excludeId = searchParams.get("exclude");
+  const questionId = searchParams.get("question_id");
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -68,55 +44,29 @@ export async function GET(request: Request) {
 
   const answeredIds = new Set((attempts ?? []).map((a) => a.question_id));
 
-  async function fetchPool(opts: {
-    topic?: string | null;
-    overlaps?: string[];
-  }) {
-    let query = supabase
-      .from("questions")
-      .select("*")
-      .eq("status", "published")
-      .in("language", languages)
-      .order("created_at", { ascending: true })
-      .limit(50);
-
-    if (opts.topic) {
-      query = query.contains("topic_tags", [opts.topic]);
-    } else if (opts.overlaps && opts.overlaps.length > 0) {
-      query = query.overlaps("topic_tags", opts.overlaps);
-    }
-
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data as Question[] | null) ?? [];
-  }
-
   try {
-    let pool: Question[];
+    const resolved = await resolveNextQuestion(supabase, {
+      userId: user.id,
+      languages,
+      preferredTopics,
+      answeredIds,
+      topic,
+      excludeId,
+      questionId,
+    });
 
-    if (topic) {
-      pool = await fetchPool({ topic });
-    } else if (preferredTopics.length > 0) {
-      pool = await fetchPool({ overlaps: preferredTopics });
-      const nextPreferred = pickNext(pool, answeredIds, excludeId);
-      if (nextPreferred && !answeredIds.has(nextPreferred.id)) {
-        return NextResponse.json({ question: toPublic(nextPreferred) });
-      }
-      // Fall back so practice never goes empty when prefs are exhausted.
-      pool = await fetchPool({});
-    } else {
-      pool = await fetchPool({});
-    }
-
-    const next = pickNext(pool, answeredIds, excludeId);
-    if (!next) {
+    if (!resolved) {
       return NextResponse.json(
         { error: "No questions available", question: null },
         { status: 404 },
       );
     }
 
-    return NextResponse.json({ question: toPublic(next) });
+    return NextResponse.json({
+      question: resolved.question,
+      liked: resolved.meta.liked ?? false,
+      share: resolved.meta.share ?? null,
+    });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Query failed";
     return NextResponse.json({ error: message }, { status: 500 });

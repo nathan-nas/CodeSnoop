@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PublicQuestion } from "@/lib/types/database";
+import type { PublicQuestion, PublicQuestionMeta } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
+import { ShareQuestionModal } from "@/components/share-question-modal";
 
 type AnswerResult = {
   is_correct: boolean;
@@ -17,6 +18,8 @@ type PrefetchedNext = {
   topicKey: string;
   question: PublicQuestion;
   html: string;
+  liked: boolean;
+  share: PublicQuestionMeta["share"] | null;
 };
 
 function topicKey(topic?: string) {
@@ -66,27 +69,38 @@ function QuestionLoading() {
 export function PracticeSession({
   initialQuestion,
   initialHtml,
+  initialLiked = false,
+  initialShare = null,
+  initialQuestionId = null,
 }: {
   initialQuestion: PublicQuestion | null;
   initialHtml: string;
+  initialLiked?: boolean;
+  initialShare?: PublicQuestionMeta["share"] | null;
+  initialQuestionId?: string | null;
 }) {
   const [question, setQuestion] = useState(initialQuestion);
   const [html, setHtml] = useState(initialHtml);
+  const [liked, setLiked] = useState(initialLiked);
+  const [share, setShare] = useState(initialShare);
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<AnswerResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [liking, setLiking] = useState(false);
   const [loadingNext, setLoadingNext] = useState(!initialQuestion);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [shareOpen, setShareOpen] = useState(false);
   const prefetchedRef = useRef<PrefetchedNext | null>(null);
   const prefetchingRef = useRef<Promise<PrefetchedNext | null> | null>(null);
   const prefetchGenerationRef = useRef(0);
 
   const fetchQuestionWithHtml = useCallback(
-    async (topic?: string, excludeId?: string) => {
+    async (opts?: { topic?: string; excludeId?: string; questionId?: string }) => {
       const params = new URLSearchParams();
-      if (topic) params.set("topic", topic);
-      if (excludeId) params.set("exclude", excludeId);
+      if (opts?.topic) params.set("topic", opts.topic);
+      if (opts?.excludeId) params.set("exclude", opts.excludeId);
+      if (opts?.questionId) params.set("question_id", opts.questionId);
 
       const res = await fetch(`/api/questions/next?${params.toString()}`);
       if (!res.ok) {
@@ -107,18 +121,29 @@ export function PracticeSession({
       });
       const htmlBody = await htmlRes.json();
 
-      return { question: q, html: htmlBody.html ?? "" };
+      return {
+        question: q,
+        html: htmlBody.html ?? "",
+        liked: Boolean(body.liked),
+        share: (body.share as PublicQuestionMeta["share"] | null) ?? null,
+      };
     },
     [],
   );
 
   const applyQuestion = useCallback(
-    (q: PublicQuestion, highlightedHtml: string) => {
+    (
+      q: PublicQuestion,
+      highlightedHtml: string,
+      meta?: { liked?: boolean; share?: PublicQuestionMeta["share"] | null },
+    ) => {
       setResult(null);
       setSelected(null);
       setError(null);
       setQuestion(q);
       setHtml(highlightedHtml);
+      setLiked(meta?.liked ?? false);
+      setShare(meta?.share ?? null);
       setStartedAt(Date.now());
       setLoadingNext(false);
     },
@@ -131,11 +156,13 @@ export function PracticeSession({
       const generation = ++prefetchGenerationRef.current;
       const promise = (async () => {
         try {
-          const data = await fetchQuestionWithHtml(topic, excludeId);
+          const data = await fetchQuestionWithHtml({ topic, excludeId });
           const prefetched: PrefetchedNext = {
             topicKey: key,
             question: data.question,
             html: data.html,
+            liked: data.liked,
+            share: data.share,
           };
           if (prefetchGenerationRef.current === generation) {
             prefetchedRef.current = prefetched;
@@ -161,7 +188,10 @@ export function PracticeSession({
       const cached = prefetchedRef.current;
       if (cached?.topicKey === key) {
         prefetchedRef.current = null;
-        applyQuestion(cached.question, cached.html);
+        applyQuestion(cached.question, cached.html, {
+          liked: cached.liked,
+          share: cached.share,
+        });
         prefetchNext(undefined, cached.question.id);
         return;
       }
@@ -170,7 +200,10 @@ export function PracticeSession({
         const pending = await prefetchingRef.current;
         if (pending?.topicKey === key) {
           prefetchedRef.current = null;
-          applyQuestion(pending.question, pending.html);
+          applyQuestion(pending.question, pending.html, {
+            liked: pending.liked,
+            share: pending.share,
+          });
           prefetchNext(undefined, pending.question.id);
           return;
         }
@@ -182,10 +215,14 @@ export function PracticeSession({
       setSelected(null);
       setQuestion(null);
       setHtml("");
+      setShare(null);
 
       try {
-        const data = await fetchQuestionWithHtml(topic);
-        applyQuestion(data.question, data.html);
+        const data = await fetchQuestionWithHtml({ topic });
+        applyQuestion(data.question, data.html, {
+          liked: data.liked,
+          share: data.share,
+        });
         prefetchNext(undefined, data.question.id);
       } catch (e) {
         setError(
@@ -199,15 +236,61 @@ export function PracticeSession({
   );
 
   useEffect(() => {
-    if (!initialQuestion) {
-      void loadNext();
-    }
-  }, [initialQuestion, loadNext]);
+    if (initialQuestion) return;
+
+    void (async () => {
+      setLoadingNext(true);
+      try {
+        const data = await fetchQuestionWithHtml({
+          questionId: initialQuestionId ?? undefined,
+        });
+        applyQuestion(data.question, data.html, {
+          liked: data.liked,
+          share: data.share,
+        });
+        prefetchNext(undefined, data.question.id);
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "Could not load the next question.",
+        );
+        setLoadingNext(false);
+      }
+    })();
+  }, [
+    initialQuestion,
+    initialQuestionId,
+    fetchQuestionWithHtml,
+    applyQuestion,
+    prefetchNext,
+  ]);
 
   useEffect(() => {
     if (!question || result) return;
     prefetchNext(undefined, question.id);
   }, [question?.id, result, prefetchNext]);
+
+  async function toggleLike() {
+    if (!question || liking) return;
+    setLiking(true);
+    setError(null);
+
+    const method = liked ? "DELETE" : "POST";
+    const res = await fetch("/api/questions/like", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question_id: question.id }),
+    });
+
+    setLiking(false);
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error ?? "Could not update like.");
+      return;
+    }
+
+    setLiked(!liked);
+  }
 
   async function submit() {
     if (!question || selected === null) return;
@@ -233,6 +316,7 @@ export function PracticeSession({
 
     setResult(body);
     setSubmitting(false);
+    setShare(null);
     prefetchedRef.current = null;
     prefetchNext(undefined, question.id);
   }
@@ -261,18 +345,53 @@ export function PracticeSession({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-        <span>{question.language}</span>
-        <span>·</span>
-        <span>{question.difficulty}</span>
-        {question.topic_tags?.slice(0, 3).map((t) => (
-          <span
-            key={t}
-            className="rounded border border-[var(--line)] px-2 py-0.5 normal-case tracking-normal"
+      {share && (
+        <div className="rounded-lg border border-[var(--accent)] bg-[rgba(15,110,86,0.08)] px-4 py-3 text-sm">
+          <p className="font-semibold text-[var(--accent)]">Friend challenge</p>
+          <p className="mt-0.5 text-[var(--ink-muted)]">
+            Shared by {share.sender_name ?? "a friend"}
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+          <span>{question.language}</span>
+          <span>·</span>
+          <span>{question.difficulty}</span>
+          {question.topic_tags?.slice(0, 3).map((t) => (
+            <span
+              key={t}
+              className="rounded border border-[var(--line)] px-2 py-0.5 normal-case tracking-normal"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void toggleLike()}
+            disabled={liking}
+            aria-pressed={liked}
+            aria-label={liked ? "Unlike question" : "Like question"}
+            className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition ${
+              liked
+                ? "border-[var(--danger)] text-[var(--danger)]"
+                : "border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
+            }`}
           >
-            {t}
-          </span>
-        ))}
+            {liked ? "♥ Liked" : "♡ Like"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            className="rounded-md border border-[var(--line)] px-3 py-1.5 text-sm font-semibold text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
+          >
+            Share
+          </button>
+        </div>
       </div>
 
       <CodeBlock html={html} />
@@ -380,6 +499,12 @@ export function PracticeSession({
           </div>
         </div>
       )}
+
+      <ShareQuestionModal
+        questionId={question.id}
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+      />
     </div>
   );
 }

@@ -4,10 +4,16 @@ import { PracticeSession } from "@/components/practice-session";
 import { SiteHeader } from "@/components/site-header";
 import { requireProfile } from "@/lib/auth";
 import { highlightCode } from "@/lib/highlight";
-import type { Language, PublicQuestion, Question } from "@/lib/types/database";
+import { resolveNextQuestion } from "@/lib/questions/next-question";
+import type { Language } from "@/lib/types/database";
 
-export default async function PracticePage() {
+export default async function PracticePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ question_id?: string }>;
+}) {
   const { supabase, profile, user } = await requireProfile();
+  const params = await searchParams;
 
   if (!profile.onboarding_completed) {
     redirect("/setup");
@@ -27,51 +33,19 @@ export default async function PracticePage() {
 
   const answeredIds = new Set((attempts ?? []).map((a) => a.question_id));
 
-  let query = supabase
-    .from("questions")
-    .select("*")
-    .eq("status", "published")
-    .in("language", languages)
-    .order("created_at", { ascending: true })
-    .limit(50);
+  const resolved = await resolveNextQuestion(supabase, {
+    userId: user.id,
+    languages,
+    preferredTopics,
+    answeredIds,
+    questionId: params.question_id ?? null,
+  });
 
-  if (preferredTopics.length > 0) {
-    query = query.overlaps("topic_tags", preferredTopics);
-  }
-
-  let { data: questions } = await query;
-  let pool = (questions as Question[] | null) ?? [];
-  let next =
-    pool.find((q) => !answeredIds.has(q.id)) ?? null;
-
-  if (!next && preferredTopics.length > 0) {
-    const fallback = await supabase
-      .from("questions")
-      .select("*")
-      .eq("status", "published")
-      .in("language", languages)
-      .order("created_at", { ascending: true })
-      .limit(50);
-    pool = (fallback.data as Question[] | null) ?? [];
-    next = pool.find((q) => !answeredIds.has(q.id)) ?? pool[0] ?? null;
-  } else if (!next) {
-    next = pool[0] ?? null;
-  }
-
-  let publicQuestion: PublicQuestion | null = null;
   let html = "";
-
-  if (next) {
-    const {
-      correct_option_index: _c,
-      explanation: _e,
-      thought_process: _t,
-      ...rest
-    } = next;
-    publicQuestion = rest;
+  if (resolved) {
     html = await highlightCode(
-      next.snippet_code,
-      next.snippet_language || next.language,
+      resolved.question.snippet_code,
+      resolved.question.snippet_language || resolved.question.language,
     );
   }
 
@@ -105,8 +79,11 @@ export default async function PracticePage() {
         </p>
         <div className="mt-8">
           <PracticeSession
-            initialQuestion={publicQuestion}
+            initialQuestion={resolved?.question ?? null}
             initialHtml={html}
+            initialLiked={resolved?.meta.liked ?? false}
+            initialShare={resolved?.meta.share ?? null}
+            initialQuestionId={params.question_id ?? null}
           />
         </div>
       </main>
