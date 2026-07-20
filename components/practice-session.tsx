@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicQuestion, PublicQuestionMeta } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
 import { ShareQuestionModal } from "@/components/share-question-modal";
@@ -13,6 +13,18 @@ type AnswerResult = {
   explanation: string;
   thought_process: string;
 };
+
+type PrefetchedNext = {
+  topicKey: string;
+  question: PublicQuestion;
+  html: string;
+  liked: boolean;
+  share: PublicQuestionMeta["share"] | null;
+};
+
+function topicKey(topic?: string) {
+  return topic ?? "__default__";
+}
 
 function QuestionLoading() {
   return (
@@ -79,6 +91,9 @@ export function PracticeSession({
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [shareOpen, setShareOpen] = useState(false);
+  const prefetchedRef = useRef<PrefetchedNext | null>(null);
+  const prefetchingRef = useRef<Promise<PrefetchedNext | null> | null>(null);
+  const prefetchGenerationRef = useRef(0);
 
   const fetchQuestionWithHtml = useCallback(
     async (opts?: { topic?: string; excludeId?: string; questionId?: string }) => {
@@ -135,8 +150,65 @@ export function PracticeSession({
     [],
   );
 
+  const prefetchNext = useCallback(
+    (topic?: string, excludeId?: string) => {
+      const key = topicKey(topic);
+      const generation = ++prefetchGenerationRef.current;
+      const promise = (async () => {
+        try {
+          const data = await fetchQuestionWithHtml({ topic, excludeId });
+          const prefetched: PrefetchedNext = {
+            topicKey: key,
+            question: data.question,
+            html: data.html,
+            liked: data.liked,
+            share: data.share,
+          };
+          if (prefetchGenerationRef.current === generation) {
+            prefetchedRef.current = prefetched;
+          }
+          return prefetched;
+        } catch {
+          return null;
+        } finally {
+          if (prefetchGenerationRef.current === generation) {
+            prefetchingRef.current = null;
+          }
+        }
+      })();
+      prefetchingRef.current = promise;
+    },
+    [fetchQuestionWithHtml],
+  );
+
   const loadNext = useCallback(
     async (topic?: string) => {
+      const key = topicKey(topic);
+
+      const cached = prefetchedRef.current;
+      if (cached?.topicKey === key) {
+        prefetchedRef.current = null;
+        applyQuestion(cached.question, cached.html, {
+          liked: cached.liked,
+          share: cached.share,
+        });
+        prefetchNext(undefined, cached.question.id);
+        return;
+      }
+
+      if (prefetchingRef.current) {
+        const pending = await prefetchingRef.current;
+        if (pending?.topicKey === key) {
+          prefetchedRef.current = null;
+          applyQuestion(pending.question, pending.html, {
+            liked: pending.liked,
+            share: pending.share,
+          });
+          prefetchNext(undefined, pending.question.id);
+          return;
+        }
+      }
+
       setLoadingNext(true);
       setError(null);
       setResult(null);
@@ -151,6 +223,7 @@ export function PracticeSession({
           liked: data.liked,
           share: data.share,
         });
+        prefetchNext(undefined, data.question.id);
       } catch (e) {
         setError(
           e instanceof Error ? e.message : "Could not load the next question.",
@@ -159,7 +232,7 @@ export function PracticeSession({
         setLoadingNext(false);
       }
     },
-    [applyQuestion, fetchQuestionWithHtml],
+    [applyQuestion, fetchQuestionWithHtml, prefetchNext],
   );
 
   useEffect(() => {
@@ -175,6 +248,7 @@ export function PracticeSession({
           liked: data.liked,
           share: data.share,
         });
+        prefetchNext(undefined, data.question.id);
       } catch (e) {
         setError(
           e instanceof Error ? e.message : "Could not load the next question.",
@@ -187,7 +261,13 @@ export function PracticeSession({
     initialQuestionId,
     fetchQuestionWithHtml,
     applyQuestion,
+    prefetchNext,
   ]);
+
+  useEffect(() => {
+    if (!question || result) return;
+    prefetchNext(undefined, question.id);
+  }, [question?.id, result, prefetchNext]);
 
   async function toggleLike() {
     if (!question || liking) return;
@@ -237,6 +317,8 @@ export function PracticeSession({
     setResult(body);
     setSubmitting(false);
     setShare(null);
+    prefetchedRef.current = null;
+    prefetchNext(undefined, question.id);
   }
 
   if (loadingNext) {
