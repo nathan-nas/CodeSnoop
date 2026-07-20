@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Heart, Share2 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicQuestion, PublicQuestionMeta } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
@@ -327,19 +328,25 @@ export function PracticeSession({
             disabled={liking}
             aria-pressed={liked}
             aria-label={liked ? "Unlike question" : "Like question"}
-            className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition ${
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-semibold transition ${
               liked
                 ? "border-[var(--danger)] text-[var(--danger)]"
                 : "border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
             }`}
           >
-            {liked ? "♥ Liked" : "♡ Like"}
+            <Heart
+              className="h-4 w-4"
+              aria-hidden
+              fill={liked ? "currentColor" : "none"}
+            />
+            {liked ? "Liked" : "Like"}
           </button>
           <button
             type="button"
             onClick={() => setShareOpen(true)}
-            className="rounded-md border border-[var(--line)] px-3 py-1.5 text-sm font-semibold text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[var(--line)] px-3 py-1.5 text-sm font-semibold text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
           >
+            <Share2 className="h-4 w-4" aria-hidden />
             Share
           </button>
         </div>
