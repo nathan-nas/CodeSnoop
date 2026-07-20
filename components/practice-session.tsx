@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PublicQuestion } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
 
@@ -12,6 +12,16 @@ type AnswerResult = {
   explanation: string;
   thought_process: string;
 };
+
+type PrefetchedNext = {
+  topicKey: string;
+  question: PublicQuestion;
+  html: string;
+};
+
+function topicKey(topic?: string) {
+  return topic ?? "__default__";
+}
 
 function QuestionLoading() {
   return (
@@ -68,24 +78,20 @@ export function PracticeSession({
   const [loadingNext, setLoadingNext] = useState(!initialQuestion);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
+  const prefetchedRef = useRef<PrefetchedNext | null>(null);
+  const prefetchingRef = useRef<Promise<PrefetchedNext | null> | null>(null);
+  const prefetchGenerationRef = useRef(0);
 
-  const loadNext = useCallback(async (topic?: string) => {
-    setLoadingNext(true);
-    setError(null);
-    setResult(null);
-    setSelected(null);
-    setQuestion(null);
-    setHtml("");
-
-    try {
+  const fetchQuestionWithHtml = useCallback(
+    async (topic?: string, excludeId?: string) => {
       const params = new URLSearchParams();
       if (topic) params.set("topic", topic);
+      if (excludeId) params.set("exclude", excludeId);
+
       const res = await fetch(`/api/questions/next?${params.toString()}`);
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
-        setError(body.error ?? "No questions available.");
-        setQuestion(null);
-        return;
+        throw new Error(body.error ?? "No questions available.");
       }
 
       const body = await res.json();
@@ -101,22 +107,107 @@ export function PracticeSession({
       });
       const htmlBody = await htmlRes.json();
 
+      return { question: q, html: htmlBody.html ?? "" };
+    },
+    [],
+  );
+
+  const applyQuestion = useCallback(
+    (q: PublicQuestion, highlightedHtml: string) => {
+      setResult(null);
+      setSelected(null);
+      setError(null);
       setQuestion(q);
-      setHtml(htmlBody.html ?? "");
+      setHtml(highlightedHtml);
       setStartedAt(Date.now());
-    } catch {
-      setError("Could not load the next question.");
-      setQuestion(null);
-    } finally {
       setLoadingNext(false);
-    }
-  }, []);
+    },
+    [],
+  );
+
+  const prefetchNext = useCallback(
+    (topic?: string, excludeId?: string) => {
+      const key = topicKey(topic);
+      const generation = ++prefetchGenerationRef.current;
+      const promise = (async () => {
+        try {
+          const data = await fetchQuestionWithHtml(topic, excludeId);
+          const prefetched: PrefetchedNext = {
+            topicKey: key,
+            question: data.question,
+            html: data.html,
+          };
+          if (prefetchGenerationRef.current === generation) {
+            prefetchedRef.current = prefetched;
+          }
+          return prefetched;
+        } catch {
+          return null;
+        } finally {
+          if (prefetchGenerationRef.current === generation) {
+            prefetchingRef.current = null;
+          }
+        }
+      })();
+      prefetchingRef.current = promise;
+    },
+    [fetchQuestionWithHtml],
+  );
+
+  const loadNext = useCallback(
+    async (topic?: string) => {
+      const key = topicKey(topic);
+
+      const cached = prefetchedRef.current;
+      if (cached?.topicKey === key) {
+        prefetchedRef.current = null;
+        applyQuestion(cached.question, cached.html);
+        prefetchNext(undefined, cached.question.id);
+        return;
+      }
+
+      if (prefetchingRef.current) {
+        const pending = await prefetchingRef.current;
+        if (pending?.topicKey === key) {
+          prefetchedRef.current = null;
+          applyQuestion(pending.question, pending.html);
+          prefetchNext(undefined, pending.question.id);
+          return;
+        }
+      }
+
+      setLoadingNext(true);
+      setError(null);
+      setResult(null);
+      setSelected(null);
+      setQuestion(null);
+      setHtml("");
+
+      try {
+        const data = await fetchQuestionWithHtml(topic);
+        applyQuestion(data.question, data.html);
+        prefetchNext(undefined, data.question.id);
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "Could not load the next question.",
+        );
+        setQuestion(null);
+        setLoadingNext(false);
+      }
+    },
+    [applyQuestion, fetchQuestionWithHtml, prefetchNext],
+  );
 
   useEffect(() => {
     if (!initialQuestion) {
       void loadNext();
     }
   }, [initialQuestion, loadNext]);
+
+  useEffect(() => {
+    if (!question || result) return;
+    prefetchNext(undefined, question.id);
+  }, [question?.id, result, prefetchNext]);
 
   async function submit() {
     if (!question || selected === null) return;
@@ -142,6 +233,8 @@ export function PracticeSession({
 
     setResult(body);
     setSubmitting(false);
+    prefetchedRef.current = null;
+    prefetchNext(undefined, question.id);
   }
 
   if (loadingNext) {
