@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import type { FriendLeaderboardRow } from "@/lib/types/database";
 
 type FriendsResponse = {
@@ -97,12 +98,16 @@ export function ShareQuestionModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="share-question-title"
+      onClick={onClose}
     >
-      <div className="w-full max-w-md rounded-xl border border-[var(--line)] bg-[var(--surface)] p-6 shadow-lg">
+      <div
+        className="w-full max-w-md rounded-xl border border-[var(--line)] bg-[#fffdf8] p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2
@@ -118,10 +123,10 @@ export function ShareQuestionModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-[var(--ink-muted)] hover:text-[var(--ink)]"
+            className="rounded-md p-1 text-[var(--ink-muted)] hover:bg-[var(--bg-deep)] hover:text-[var(--ink)]"
             aria-label="Close"
           >
-            ✕
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 
