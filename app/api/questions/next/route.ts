@@ -12,10 +12,18 @@ function toPublic(q: Question): PublicQuestion {
   return publicQuestion;
 }
 
-function pickNext(pool: Question[], answeredIds: Set<string>): Question | null {
+function pickNext(
+  pool: Question[],
+  answeredIds: Set<string>,
+  excludeId?: string | null,
+): Question | null {
+  const candidates = excludeId
+    ? pool.filter((q) => q.id !== excludeId)
+    : pool;
+
   return (
-    pool.find((q) => !answeredIds.has(q.id)) ??
-    pool[Math.floor(Math.random() * pool.length)] ??
+    candidates.find((q) => !answeredIds.has(q.id)) ??
+    candidates[Math.floor(Math.random() * candidates.length)] ??
     null
   );
 }
@@ -33,6 +41,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const topic = searchParams.get("topic");
   const languageParam = searchParams.get("language");
+  const excludeId = searchParams.get("exclude");
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -89,7 +98,7 @@ export async function GET(request: Request) {
       pool = await fetchPool({ topic });
     } else if (preferredTopics.length > 0) {
       pool = await fetchPool({ overlaps: preferredTopics });
-      const nextPreferred = pickNext(pool, answeredIds);
+      const nextPreferred = pickNext(pool, answeredIds, excludeId);
       if (nextPreferred && !answeredIds.has(nextPreferred.id)) {
         return NextResponse.json({ question: toPublic(nextPreferred) });
       }
@@ -99,7 +108,7 @@ export async function GET(request: Request) {
       pool = await fetchPool({});
     }
 
-    const next = pickNext(pool, answeredIds);
+    const next = pickNext(pool, answeredIds, excludeId);
     if (!next) {
       return NextResponse.json(
         { error: "No questions available", question: null },
