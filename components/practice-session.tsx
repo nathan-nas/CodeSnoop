@@ -6,6 +6,63 @@ import type { PublicQuestion, PublicQuestionMeta } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
 import { ShareQuestionModal } from "@/components/share-question-modal";
 
+type PrefetchedQuestion = {
+  question: PublicQuestion;
+  html: string;
+  liked: boolean;
+  share: PublicQuestionMeta["share"] | null;
+};
+
+// Holds a prefetch in-flight. `resolved` is set once the promise settles.
+type PrefetchHandle = {
+  promise: Promise<PrefetchedQuestion | null>;
+  resolved?: PrefetchedQuestion | null;
+};
+
+async function fetchNextQuestion(opts?: {
+  topic?: string;
+  excludeId?: string;
+  questionId?: string;
+}): Promise<PrefetchedQuestion | null> {
+  try {
+    const params = new URLSearchParams();
+    if (opts?.topic) params.set("topic", opts.topic);
+    if (opts?.excludeId) params.set("exclude", opts.excludeId);
+    if (opts?.questionId) params.set("question_id", opts.questionId);
+
+    const res = await fetch(`/api/questions/next?${params.toString()}`);
+    if (!res.ok) return null;
+    const body = await res.json();
+    const q = body.question as PublicQuestion;
+    const htmlRes = await fetch("/api/highlight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: q.snippet_code,
+        language: q.snippet_language || q.language,
+      }),
+    });
+    const htmlBody = await htmlRes.json();
+    return {
+      question: q,
+      html: htmlBody.html ?? "",
+      liked: Boolean(body.liked),
+      share: (body.share as PublicQuestionMeta["share"] | null) ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function startPrefetch(excludeId?: string): PrefetchHandle {
+  const handle = {} as PrefetchHandle;
+  handle.promise = fetchNextQuestion({ excludeId }).then((result) => {
+    handle.resolved = result;
+    return result;
+  });
+  return handle;
+}
+
 type AnswerResult = {
   is_correct: boolean;
   correct_option_index: number;
@@ -13,18 +70,6 @@ type AnswerResult = {
   explanation: string;
   thought_process: string;
 };
-
-type PrefetchedNext = {
-  topicKey: string;
-  question: PublicQuestion;
-  html: string;
-  liked: boolean;
-  share: PublicQuestionMeta["share"] | null;
-};
-
-function topicKey(topic?: string) {
-  return topic ?? "__default__";
-}
 
 function QuestionLoading() {
   return (
@@ -91,148 +136,64 @@ export function PracticeSession({
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
   const [shareOpen, setShareOpen] = useState(false);
-  const prefetchedRef = useRef<PrefetchedNext | null>(null);
-  const prefetchingRef = useRef<Promise<PrefetchedNext | null> | null>(null);
-  const prefetchGenerationRef = useRef(0);
 
-  const fetchQuestionWithHtml = useCallback(
-    async (opts?: { topic?: string; excludeId?: string; questionId?: string }) => {
-      const params = new URLSearchParams();
-      if (opts?.topic) params.set("topic", opts.topic);
-      if (opts?.excludeId) params.set("exclude", opts.excludeId);
-      if (opts?.questionId) params.set("question_id", opts.questionId);
+  // Prefetch the next question while the user reads the explanation.
+  const prefetchRef = useRef<PrefetchHandle | null>(null);
 
-      const res = await fetch(`/api/questions/next?${params.toString()}`);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.error ?? "No questions available.");
-      }
-
-      const body = await res.json();
-      const q = body.question as PublicQuestion;
-
-      const htmlRes = await fetch("/api/highlight", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          code: q.snippet_code,
-          language: q.snippet_language || q.language,
-        }),
-      });
-      const htmlBody = await htmlRes.json();
-
-      return {
-        question: q,
-        html: htmlBody.html ?? "",
-        liked: Boolean(body.liked),
-        share: (body.share as PublicQuestionMeta["share"] | null) ?? null,
-      };
-    },
-    [],
-  );
-
-  const applyQuestion = useCallback(
-    (
-      q: PublicQuestion,
-      highlightedHtml: string,
-      meta?: { liked?: boolean; share?: PublicQuestionMeta["share"] | null },
-    ) => {
-      setResult(null);
-      setSelected(null);
-      setError(null);
-      setQuestion(q);
-      setHtml(highlightedHtml);
-      setLiked(meta?.liked ?? false);
-      setShare(meta?.share ?? null);
-      setStartedAt(Date.now());
-      setLoadingNext(false);
-    },
-    [],
-  );
-
-  const prefetchNext = useCallback(
-    (topic?: string, excludeId?: string) => {
-      const key = topicKey(topic);
-      const generation = ++prefetchGenerationRef.current;
-      const promise = (async () => {
-        try {
-          const data = await fetchQuestionWithHtml({ topic, excludeId });
-          const prefetched: PrefetchedNext = {
-            topicKey: key,
-            question: data.question,
-            html: data.html,
-            liked: data.liked,
-            share: data.share,
-          };
-          if (prefetchGenerationRef.current === generation) {
-            prefetchedRef.current = prefetched;
-          }
-          return prefetched;
-        } catch {
-          return null;
-        } finally {
-          if (prefetchGenerationRef.current === generation) {
-            prefetchingRef.current = null;
-          }
-        }
-      })();
-      prefetchingRef.current = promise;
-    },
-    [fetchQuestionWithHtml],
-  );
+  const applyFetched = useCallback((fetched: PrefetchedQuestion) => {
+    setQuestion(fetched.question);
+    setHtml(fetched.html);
+    setLiked(fetched.liked);
+    setShare(fetched.share ?? null);
+    setStartedAt(Date.now());
+  }, []);
 
   const loadNext = useCallback(
     async (topic?: string) => {
-      const key = topicKey(topic);
-
-      const cached = prefetchedRef.current;
-      if (cached?.topicKey === key) {
-        prefetchedRef.current = null;
-        applyQuestion(cached.question, cached.html, {
-          liked: cached.liked,
-          share: cached.share,
-        });
-        prefetchNext(undefined, cached.question.id);
-        return;
-      }
-
-      if (prefetchingRef.current) {
-        const pending = await prefetchingRef.current;
-        if (pending?.topicKey === key) {
-          prefetchedRef.current = null;
-          applyQuestion(pending.question, pending.html, {
-            liked: pending.liked,
-            share: pending.share,
-          });
-          prefetchNext(undefined, pending.question.id);
-          return;
-        }
-      }
-
-      setLoadingNext(true);
       setError(null);
       setResult(null);
       setSelected(null);
-      setQuestion(null);
-      setHtml("");
       setShare(null);
 
+      // Consume any prefetch (only applies when no topic filter is requested).
+      const prefetch = !topic ? prefetchRef.current : null;
+      prefetchRef.current = null;
+
+      if (prefetch && prefetch.resolved !== undefined) {
+        // Prefetch already settled — apply synchronously, no skeleton at all.
+        if (prefetch.resolved) {
+          applyFetched(prefetch.resolved);
+        } else {
+          setError("No questions available.");
+          setQuestion(null);
+        }
+        return;
+      }
+
+      // Prefetch still in-flight or no prefetch — show skeleton while waiting.
+      setLoadingNext(true);
+      setQuestion(null);
+      setHtml("");
+
       try {
-        const data = await fetchQuestionWithHtml({ topic });
-        applyQuestion(data.question, data.html, {
-          liked: data.liked,
-          share: data.share,
-        });
-        prefetchNext(undefined, data.question.id);
-      } catch (e) {
-        setError(
-          e instanceof Error ? e.message : "Could not load the next question.",
-        );
+        const fetched = prefetch
+          ? await prefetch.promise
+          : await fetchNextQuestion({ topic });
+
+        if (!fetched) {
+          setError("No questions available.");
+          setQuestion(null);
+          return;
+        }
+        applyFetched(fetched);
+      } catch {
+        setError("Could not load the next question.");
         setQuestion(null);
+      } finally {
         setLoadingNext(false);
       }
     },
-    [applyQuestion, fetchQuestionWithHtml, prefetchNext],
+    [applyFetched],
   );
 
   useEffect(() => {
@@ -241,33 +202,23 @@ export function PracticeSession({
     void (async () => {
       setLoadingNext(true);
       try {
-        const data = await fetchQuestionWithHtml({
+        const fetched = await fetchNextQuestion({
           questionId: initialQuestionId ?? undefined,
         });
-        applyQuestion(data.question, data.html, {
-          liked: data.liked,
-          share: data.share,
-        });
-        prefetchNext(undefined, data.question.id);
-      } catch (e) {
-        setError(
-          e instanceof Error ? e.message : "Could not load the next question.",
-        );
+        if (!fetched) {
+          setError("No questions available.");
+          setQuestion(null);
+          return;
+        }
+        applyFetched(fetched);
+      } catch {
+        setError("Could not load the next question.");
+        setQuestion(null);
+      } finally {
         setLoadingNext(false);
       }
     })();
-  }, [
-    initialQuestion,
-    initialQuestionId,
-    fetchQuestionWithHtml,
-    applyQuestion,
-    prefetchNext,
-  ]);
-
-  useEffect(() => {
-    if (!question || result) return;
-    prefetchNext(undefined, question.id);
-  }, [question?.id, result, prefetchNext]);
+  }, [initialQuestion, initialQuestionId, applyFetched]);
 
   async function toggleLike() {
     if (!question || liking) return;
@@ -317,8 +268,8 @@ export function PracticeSession({
     setResult(body);
     setSubmitting(false);
     setShare(null);
-    prefetchedRef.current = null;
-    prefetchNext(undefined, question.id);
+    // Kick off the next question in the background so "Next question" is instant.
+    prefetchRef.current = startPrefetch(question.id);
   }
 
   if (loadingNext) {
