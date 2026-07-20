@@ -66,6 +66,39 @@ export type PublicQuestion = Omit<
   "correct_option_index" | "explanation" | "thought_process"
 >;
 
+export type PublicQuestionMeta = {
+  liked?: boolean;
+  share?: {
+    id: string;
+    sender_name: string | null;
+  };
+};
+
+export type QuestionLike = {
+  user_id: string;
+  question_id: string;
+  created_at: string;
+};
+
+export type QuestionShare = {
+  id: string;
+  sender_id: string;
+  recipient_id: string;
+  question_id: string;
+  sender_display_name: string | null;
+  created_at: string;
+  attempted_at: string | null;
+};
+
+export type LikedQuestionRow = {
+  question_id: string;
+  liked_at: string;
+  question_stem: string;
+  language: Language;
+  difficulty: Difficulty;
+  topic_tags: string[];
+};
+
 export type QuestionAttempt = {
   id: string;
   created_at: string;

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FriendsPanel } from "@/components/friends-panel";
+import { LikedQuestionsPanel } from "@/components/liked-questions-panel";
 import { ProfileForm } from "@/components/profile-form";
 import { SiteHeader } from "@/components/site-header";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -48,6 +49,10 @@ export default async function ProfilePage({
 
         <div className="mt-10">
           <ProfileForm profile={profile} />
+        </div>
+
+        <div className="mt-14 border-t border-[var(--line)] pt-10">
+          <LikedQuestionsPanel />
         </div>
 
         <div className="mt-14 border-t border-[var(--line)] pt-10">

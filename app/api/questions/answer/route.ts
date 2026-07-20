@@ -56,6 +56,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: attemptError.message }, { status: 500 });
   }
 
+  await supabase
+    .from("question_shares")
+    .update({ attempted_at: new Date().toISOString() })
+    .eq("recipient_id", user.id)
+    .eq("question_id", questionId)
+    .is("attempted_at", null);
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("total_points, daily_streak, last_active_at")
