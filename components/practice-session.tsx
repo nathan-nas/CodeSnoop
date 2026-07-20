@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PublicQuestion } from "@/lib/types/database";
+import type { PublicQuestion, PublicQuestionMeta } from "@/lib/types/database";
 import { CodeBlock } from "@/components/code-block";
+import { ShareQuestionModal } from "@/components/share-question-modal";
 
-type PrefetchedQuestion = { question: PublicQuestion; html: string };
+type PrefetchedQuestion = {
+  question: PublicQuestion;
+  html: string;
+  liked: boolean;
+  share: PublicQuestionMeta["share"] | null;
+};
 
 // Holds a prefetch in-flight. `resolved` is set once the promise settles.
 type PrefetchHandle = {
@@ -13,12 +19,17 @@ type PrefetchHandle = {
   resolved?: PrefetchedQuestion | null;
 };
 
-async function fetchNextQuestion(
-  topic?: string,
-): Promise<PrefetchedQuestion | null> {
+async function fetchNextQuestion(opts?: {
+  topic?: string;
+  excludeId?: string;
+  questionId?: string;
+}): Promise<PrefetchedQuestion | null> {
   try {
     const params = new URLSearchParams();
-    if (topic) params.set("topic", topic);
+    if (opts?.topic) params.set("topic", opts.topic);
+    if (opts?.excludeId) params.set("exclude", opts.excludeId);
+    if (opts?.questionId) params.set("question_id", opts.questionId);
+
     const res = await fetch(`/api/questions/next?${params.toString()}`);
     if (!res.ok) return null;
     const body = await res.json();
@@ -32,15 +43,20 @@ async function fetchNextQuestion(
       }),
     });
     const htmlBody = await htmlRes.json();
-    return { question: q, html: htmlBody.html ?? "" };
+    return {
+      question: q,
+      html: htmlBody.html ?? "",
+      liked: Boolean(body.liked),
+      share: (body.share as PublicQuestionMeta["share"] | null) ?? null,
+    };
   } catch {
     return null;
   }
 }
 
-function startPrefetch(): PrefetchHandle {
+function startPrefetch(excludeId?: string): PrefetchHandle {
   const handle = {} as PrefetchHandle;
-  handle.promise = fetchNextQuestion().then((result) => {
+  handle.promise = fetchNextQuestion({ excludeId }).then((result) => {
     handle.resolved = result;
     return result;
   });
@@ -98,75 +114,134 @@ function QuestionLoading() {
 export function PracticeSession({
   initialQuestion,
   initialHtml,
+  initialLiked = false,
+  initialShare = null,
+  initialQuestionId = null,
 }: {
   initialQuestion: PublicQuestion | null;
   initialHtml: string;
+  initialLiked?: boolean;
+  initialShare?: PublicQuestionMeta["share"] | null;
+  initialQuestionId?: string | null;
 }) {
   const [question, setQuestion] = useState(initialQuestion);
   const [html, setHtml] = useState(initialHtml);
+  const [liked, setLiked] = useState(initialLiked);
+  const [share, setShare] = useState(initialShare);
   const [selected, setSelected] = useState<number | null>(null);
   const [result, setResult] = useState<AnswerResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [liking, setLiking] = useState(false);
   const [loadingNext, setLoadingNext] = useState(!initialQuestion);
   const [error, setError] = useState<string | null>(null);
   const [startedAt, setStartedAt] = useState(() => Date.now());
+  const [shareOpen, setShareOpen] = useState(false);
 
   // Prefetch the next question while the user reads the explanation.
   const prefetchRef = useRef<PrefetchHandle | null>(null);
 
-  const loadNext = useCallback(async (topic?: string) => {
-    setError(null);
-    setResult(null);
-    setSelected(null);
+  const applyFetched = useCallback((fetched: PrefetchedQuestion) => {
+    setQuestion(fetched.question);
+    setHtml(fetched.html);
+    setLiked(fetched.liked);
+    setShare(fetched.share ?? null);
+    setStartedAt(Date.now());
+  }, []);
 
-    // Consume any prefetch (only applies when no topic filter is requested).
-    const prefetch = !topic ? prefetchRef.current : null;
-    prefetchRef.current = null;
+  const loadNext = useCallback(
+    async (topic?: string) => {
+      setError(null);
+      setResult(null);
+      setSelected(null);
+      setShare(null);
 
-    if (prefetch && prefetch.resolved !== undefined) {
-      // Prefetch already settled — apply synchronously, no skeleton at all.
-      if (prefetch.resolved) {
-        setQuestion(prefetch.resolved.question);
-        setHtml(prefetch.resolved.html);
-        setStartedAt(Date.now());
-      } else {
-        setError("No questions available.");
-        setQuestion(null);
+      // Consume any prefetch (only applies when no topic filter is requested).
+      const prefetch = !topic ? prefetchRef.current : null;
+      prefetchRef.current = null;
+
+      if (prefetch && prefetch.resolved !== undefined) {
+        // Prefetch already settled — apply synchronously, no skeleton at all.
+        if (prefetch.resolved) {
+          applyFetched(prefetch.resolved);
+        } else {
+          setError("No questions available.");
+          setQuestion(null);
+        }
+        return;
       }
+
+      // Prefetch still in-flight or no prefetch — show skeleton while waiting.
+      setLoadingNext(true);
+      setQuestion(null);
+      setHtml("");
+
+      try {
+        const fetched = prefetch
+          ? await prefetch.promise
+          : await fetchNextQuestion({ topic });
+
+        if (!fetched) {
+          setError("No questions available.");
+          setQuestion(null);
+          return;
+        }
+        applyFetched(fetched);
+      } catch {
+        setError("Could not load the next question.");
+        setQuestion(null);
+      } finally {
+        setLoadingNext(false);
+      }
+    },
+    [applyFetched],
+  );
+
+  useEffect(() => {
+    if (initialQuestion) return;
+
+    void (async () => {
+      setLoadingNext(true);
+      try {
+        const fetched = await fetchNextQuestion({
+          questionId: initialQuestionId ?? undefined,
+        });
+        if (!fetched) {
+          setError("No questions available.");
+          setQuestion(null);
+          return;
+        }
+        applyFetched(fetched);
+      } catch {
+        setError("Could not load the next question.");
+        setQuestion(null);
+      } finally {
+        setLoadingNext(false);
+      }
+    })();
+  }, [initialQuestion, initialQuestionId, applyFetched]);
+
+  async function toggleLike() {
+    if (!question || liking) return;
+    setLiking(true);
+    setError(null);
+
+    const method = liked ? "DELETE" : "POST";
+    const res = await fetch("/api/questions/like", {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question_id: question.id }),
+    });
+
+    setLiking(false);
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      setError(body.error ?? "Could not update like.");
       return;
     }
 
-    // Prefetch still in-flight or no prefetch — show skeleton while waiting.
-    setLoadingNext(true);
-    setQuestion(null);
-    setHtml("");
-
-    try {
-      const fetched = prefetch
-        ? await prefetch.promise
-        : await fetchNextQuestion(topic);
-
-      if (!fetched) {
-        setError("No questions available.");
-        setQuestion(null);
-        return;
-      }
-      setQuestion(fetched.question);
-      setHtml(fetched.html);
-      setStartedAt(Date.now());
-    } catch {
-      setError("Could not load the next question.");
-      setQuestion(null);
-    } finally {
-      setLoadingNext(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!initialQuestion) {
-      void loadNext();
-    }
-  }, [initialQuestion, loadNext]);
+    setLiked(!liked);
+  }
 
   async function submit() {
     if (!question || selected === null) return;
@@ -192,8 +267,9 @@ export function PracticeSession({
 
     setResult(body);
     setSubmitting(false);
+    setShare(null);
     // Kick off the next question in the background so "Next question" is instant.
-    prefetchRef.current = startPrefetch();
+    prefetchRef.current = startPrefetch(question.id);
   }
 
   if (loadingNext) {
@@ -220,18 +296,53 @@ export function PracticeSession({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[var(--ink-muted)]">
-        <span>{question.language}</span>
-        <span>·</span>
-        <span>{question.difficulty}</span>
-        {question.topic_tags?.slice(0, 3).map((t) => (
-          <span
-            key={t}
-            className="rounded border border-[var(--line)] px-2 py-0.5 normal-case tracking-normal"
+      {share && (
+        <div className="rounded-lg border border-[var(--accent)] bg-[rgba(15,110,86,0.08)] px-4 py-3 text-sm">
+          <p className="font-semibold text-[var(--accent)]">Friend challenge</p>
+          <p className="mt-0.5 text-[var(--ink-muted)]">
+            Shared by {share.sender_name ?? "a friend"}
+          </p>
+        </div>
+      )}
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-wide text-[var(--ink-muted)]">
+          <span>{question.language}</span>
+          <span>·</span>
+          <span>{question.difficulty}</span>
+          {question.topic_tags?.slice(0, 3).map((t) => (
+            <span
+              key={t}
+              className="rounded border border-[var(--line)] px-2 py-0.5 normal-case tracking-normal"
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void toggleLike()}
+            disabled={liking}
+            aria-pressed={liked}
+            aria-label={liked ? "Unlike question" : "Like question"}
+            className={`rounded-md border px-3 py-1.5 text-sm font-semibold transition ${
+              liked
+                ? "border-[var(--danger)] text-[var(--danger)]"
+                : "border-[var(--line)] text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
+            }`}
           >
-            {t}
-          </span>
-        ))}
+            {liked ? "♥ Liked" : "♡ Like"}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShareOpen(true)}
+            className="rounded-md border border-[var(--line)] px-3 py-1.5 text-sm font-semibold text-[var(--ink-muted)] hover:border-[var(--ink-muted)]"
+          >
+            Share
+          </button>
+        </div>
       </div>
 
       <CodeBlock html={html} />
@@ -339,6 +450,12 @@ export function PracticeSession({
           </div>
         </div>
       )}
+
+      <ShareQuestionModal
+        questionId={question.id}
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+      />
     </div>
   );
 }
